@@ -1,0 +1,5 @@
+000 immov 1 12
+001 immov 2 13
+002 add 1 2
+003 out 1
+004 halt

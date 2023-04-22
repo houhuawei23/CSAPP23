@@ -1,0 +1,10 @@
+Branch Predictor Framework by mars, 2020
+[parse_bt9_file] Begin parse BT9 file, please wait...
+[parse_bt9_file] End of parse BT9 file, total 29274796 lines parsed...
+  TRACE                       	 : ./traces/LONG_MOBILE-1.bt9.trace.gz
+  NUM_INSTRUCTIONS            	 :  642168792
+  NUM_BR                      	 :   29269647
+  NUM_UNCOND_BR               	 :      54106
+  NUM_CONDITIONAL_BR          	 :   29215542
+  NUM_MISPREDICTIONS          	 :     370661
+  MISPRED_PER_1K_INST         	 :     0.5772

@@ -1,0 +1,40 @@
+;XILINX COREGenerator(tm)Distributed Arithmetic FIR filter coefficient (.COE) File
+;Created by Python
+;Date: 2023-04-22 15:46:39
+Radix = 16;
+Coefficient_Width = 16;
+CoefData = 
+30f2,
+0000,
+0000,
+0000,
+0000,
+30f0,
+0100,
+0000,
+0000,
+0000,
+702b,
+0000,
+0000,
+0000,
+0060,
+0230,
+f301,
+0000,
+0000,
+0000,
+0060,
+3030,
+f364,
+0000,
+0000,
+0000,
+0061,
+0375,
+1d00,
+0000,
+0000,
+0000,
+2020,
+00;
