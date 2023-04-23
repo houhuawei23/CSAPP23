@@ -22,3 +22,5 @@ do
         "$executable" "$file" >> "$outfile"
     fi
 done
+cd "$res_folder"
+python outprocess.py "$executable.out"

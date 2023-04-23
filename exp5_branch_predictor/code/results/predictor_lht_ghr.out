@@ -6,8 +6,8 @@ Branch Predictor Framework by mars, 2020
   NUM_BR                      	 :   29269647
   NUM_UNCOND_BR               	 :      54106
   NUM_CONDITIONAL_BR          	 :   29215542
-  NUM_MISPREDICTIONS          	 :    2293906
-  MISPRED_PER_1K_INST         	 :     3.5721
+  NUM_MISPREDICTIONS          	 :    1612682
+  MISPRED_PER_1K_INST         	 :     2.5113
 Branch Predictor Framework by mars, 2020
 [parse_bt9_file] Begin parse BT9 file, please wait...
 [parse_bt9_file] End of parse BT9 file, total 112998784 lines parsed...
@@ -16,8 +16,8 @@ Branch Predictor Framework by mars, 2020
   NUM_BR                      	 :  112993125
   NUM_UNCOND_BR               	 :    1404677
   NUM_CONDITIONAL_BR          	 :  111588449
-  NUM_MISPREDICTIONS          	 :    2290027
-  MISPRED_PER_1K_INST         	 :     1.8010
+  NUM_MISPREDICTIONS          	 :   21831181
+  MISPRED_PER_1K_INST         	 :    17.1688
 Branch Predictor Framework by mars, 2020
 [parse_bt9_file] Begin parse BT9 file, please wait...
 [parse_bt9_file] End of parse BT9 file, total 163301474 lines parsed...
@@ -26,8 +26,8 @@ Branch Predictor Framework by mars, 2020
   NUM_BR                      	 :  163272689
   NUM_UNCOND_BR               	 :   26253684
   NUM_CONDITIONAL_BR          	 :  137019006
-  NUM_MISPREDICTIONS          	 :   10692225
-  MISPRED_PER_1K_INST         	 :     8.3280
+  NUM_MISPREDICTIONS          	 :   18635176
+  MISPRED_PER_1K_INST         	 :    14.5146
 Branch Predictor Framework by mars, 2020
 [parse_bt9_file] Begin parse BT9 file, please wait...
 [parse_bt9_file] End of parse BT9 file, total 13883507 lines parsed...
@@ -36,8 +36,8 @@ Branch Predictor Framework by mars, 2020
   NUM_BR                      	 :   13881337
   NUM_UNCOND_BR               	 :      22885
   NUM_CONDITIONAL_BR          	 :   13858453
-  NUM_MISPREDICTIONS          	 :    2310885
-  MISPRED_PER_1K_INST         	 :     2.3109
+  NUM_MISPREDICTIONS          	 :      10949
+  MISPRED_PER_1K_INST         	 :     0.0109
 Branch Predictor Framework by mars, 2020
 [parse_bt9_file] Begin parse BT9 file, please wait...
 [parse_bt9_file] End of parse BT9 file, total 16667959 lines parsed...
@@ -46,8 +46,8 @@ Branch Predictor Framework by mars, 2020
   NUM_BR                      	 :   16662268
   NUM_UNCOND_BR               	 :    4744843
   NUM_CONDITIONAL_BR          	 :   11917426
-  NUM_MISPREDICTIONS          	 :     538995
-  MISPRED_PER_1K_INST         	 :     3.6180
+  NUM_MISPREDICTIONS          	 :     646472
+  MISPRED_PER_1K_INST         	 :     4.3395
 Branch Predictor Framework by mars, 2020
 [parse_bt9_file] Begin parse BT9 file, please wait...
 [parse_bt9_file] End of parse BT9 file, total 54349501 lines parsed...
@@ -56,8 +56,8 @@ Branch Predictor Framework by mars, 2020
   NUM_BR                      	 :   54336215
   NUM_UNCOND_BR               	 :    3180020
   NUM_CONDITIONAL_BR          	 :   51156196
-  NUM_MISPREDICTIONS          	 :   10945215
-  MISPRED_PER_1K_INST         	 :    31.7452
+  NUM_MISPREDICTIONS          	 :   10905239
+  MISPRED_PER_1K_INST         	 :    31.6292
 Branch Predictor Framework by mars, 2020
 [parse_bt9_file] Begin parse BT9 file, please wait...
 [parse_bt9_file] End of parse BT9 file, total 770171 lines parsed...
@@ -66,8 +66,8 @@ Branch Predictor Framework by mars, 2020
   NUM_BR                      	 :     770140
   NUM_UNCOND_BR               	 :          1
   NUM_CONDITIONAL_BR          	 :     770140
-  NUM_MISPREDICTIONS          	 :         68
-  MISPRED_PER_1K_INST         	 :     0.0007
+  NUM_MISPREDICTIONS          	 :         50
+  MISPRED_PER_1K_INST         	 :     0.0005
 Branch Predictor Framework by mars, 2020
 [parse_bt9_file] Begin parse BT9 file, please wait...
 [parse_bt9_file] End of parse BT9 file, total 2834808 lines parsed...
@@ -76,8 +76,8 @@ Branch Predictor Framework by mars, 2020
   NUM_BR                      	 :    2834777
   NUM_UNCOND_BR               	 :          1
   NUM_CONDITIONAL_BR          	 :    2834777
-  NUM_MISPREDICTIONS          	 :        194
-  MISPRED_PER_1K_INST         	 :     0.0020
+  NUM_MISPREDICTIONS          	 :        177
+  MISPRED_PER_1K_INST         	 :     0.0018
 Branch Predictor Framework by mars, 2020
 [parse_bt9_file] Begin parse BT9 file, please wait...
 [parse_bt9_file] End of parse BT9 file, total 4052 lines parsed...
@@ -86,8 +86,8 @@ Branch Predictor Framework by mars, 2020
   NUM_BR                      	 :       4004
   NUM_UNCOND_BR               	 :        304
   NUM_CONDITIONAL_BR          	 :       3701
-  NUM_MISPREDICTIONS          	 :        536
-  MISPRED_PER_1K_INST         	 :     2.4274
+  NUM_MISPREDICTIONS          	 :          7
+  MISPRED_PER_1K_INST         	 :     0.0317
 Branch Predictor Framework by mars, 2020
 [parse_bt9_file] Begin parse BT9 file, please wait...
 [parse_bt9_file] End of parse BT9 file, total 230852 lines parsed...
@@ -96,8 +96,8 @@ Branch Predictor Framework by mars, 2020
   NUM_BR                      	 :     230804
   NUM_UNCOND_BR               	 :        304
   NUM_CONDITIONAL_BR          	 :     230501
-  NUM_MISPREDICTIONS          	 :      25735
-  MISPRED_PER_1K_INST         	 :     1.8309
+  NUM_MISPREDICTIONS          	 :        104
+  MISPRED_PER_1K_INST         	 :     0.0074
 Branch Predictor Framework by mars, 2020
 [parse_bt9_file] Begin parse BT9 file, please wait...
 [parse_bt9_file] End of parse BT9 file, total 16003531 lines parsed...
@@ -106,8 +106,8 @@ Branch Predictor Framework by mars, 2020
   NUM_BR                      	 :   15996915
   NUM_UNCOND_BR               	 :     103520
   NUM_CONDITIONAL_BR          	 :   15893396
-  NUM_MISPREDICTIONS          	 :     459508
-  MISPRED_PER_1K_INST         	 :     4.5439
+  NUM_MISPREDICTIONS          	 :     774863
+  MISPRED_PER_1K_INST         	 :     7.6623
 Branch Predictor Framework by mars, 2020
 [parse_bt9_file] Begin parse BT9 file, please wait...
 [parse_bt9_file] End of parse BT9 file, total 123361256 lines parsed...
@@ -116,8 +116,8 @@ Branch Predictor Framework by mars, 2020
   NUM_BR                      	 :  123358312
   NUM_UNCOND_BR               	 :   11682421
   NUM_CONDITIONAL_BR          	 :  111675892
-  NUM_MISPREDICTIONS          	 :    7173436
-  MISPRED_PER_1K_INST         	 :    10.8909
+  NUM_MISPREDICTIONS          	 :   17415925
+  MISPRED_PER_1K_INST         	 :    26.4414
 Branch Predictor Framework by mars, 2020
 [parse_bt9_file] Begin parse BT9 file, please wait...
 [parse_bt9_file] End of parse BT9 file, total 17849367 lines parsed...
@@ -126,5 +126,5 @@ Branch Predictor Framework by mars, 2020
   NUM_BR                      	 :   17837676
   NUM_UNCOND_BR               	 :     858556
   NUM_CONDITIONAL_BR          	 :   16979121
-  NUM_MISPREDICTIONS          	 :    1989879
-  MISPRED_PER_1K_INST         	 :     5.3419
+  NUM_MISPREDICTIONS          	 :    2886521
+  MISPRED_PER_1K_INST         	 :     7.7489
