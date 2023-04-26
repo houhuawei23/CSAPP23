@@ -59,7 +59,7 @@ char GetPrediction(UINT64 PC)
     int longestMatchIndex = -1;
 
     // 寻找与计算出的标签匹配的表项
-    for (int i = 0; i < NUM_BASE_PREDICTORS; i++)
+    for (int i = NUM_BASE_PREDICTORS -1; i >= 0; i--)
     {
         // ghr & ((1 << historyLengths[i]) - 1)
         // 取ghr的低historyLengths[i]位，与PC异或，得到索引
@@ -76,6 +76,7 @@ char GetPrediction(UINT64 PC)
     UINT32 phtCounter;
     if (longestMatchIndex >= 0)
     {
+        // 如果找到匹配的表项，就使用该表项的计数器
         UINT32 index = (PC ^ (ghr & ((1 << historyLengths[longestMatchIndex]) - 1))) % numPhtEntries;
         phtCounter = pht[longestMatchIndex][index];
     }
@@ -101,7 +102,7 @@ void UpdatePredictor(UINT64 PC, OpType opType, char resolveDir, char predDir, UI
     branchTarget = branchTarget;
 
     // 更新匹配的预测器
-    for (int i = 0; i < NUM_BASE_PREDICTORS; i++)
+    for (int i = NUM_BASE_PREDICTORS - 1; i >= 0; i--)
     {
         UINT32 index = (PC ^ (ghr & ((1 << historyLengths[i]) - 1))) % numPhtEntries;
         UINT32 current_tag = (PC >> historyLengths[i]) % numPhtEntries;

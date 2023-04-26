@@ -27,4 +27,4 @@ predictor_% : bt9.o main.o predictor_%.o
 
 clean:
 	rm -f predictor
-	rm -f predictor_*
+	rm -f predictor_*[!c]

@@ -76,6 +76,7 @@ char GetPrediction(UINT64 PC)
     UINT32 phtCounter;
     if (longestMatchIndex >= 0)
     {
+        // 如果找到匹配的表项，就使用该表项的计数器
         UINT32 index = (PC ^ (ghr & ((1 << historyLengths[longestMatchIndex]) - 1))) % numPhtEntries;
         phtCounter = pht[longestMatchIndex][index];
     }

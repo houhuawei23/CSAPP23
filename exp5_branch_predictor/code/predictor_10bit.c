@@ -23,7 +23,7 @@ static inline UINT32 SatDecrement(UINT32 x)
 UINT32 *pht;          // pattern history table 模式历史表
 UINT32 numPhtEntries; // entries in pht PHT中的项数
 
-#define PHT_CTR_MAX 1 // 0 or 1
+#define PHT_CTR_MAX 1023 // 0 or 1
 #define PHT_CTR_INIT 0
 
 #define HIST_LEN 15 // 全局历史寄存器长度，取20位

@@ -1,0 +1,130 @@
+Branch Predictor Framework by mars, 2020
+[parse_bt9_file] Begin parse BT9 file, please wait...
+[parse_bt9_file] End of parse BT9 file, total 29274796 lines parsed...
+  TRACE                       	 : ./traces/LONG_MOBILE-1.bt9.trace.gz
+  NUM_INSTRUCTIONS            	 :  642168792
+  NUM_BR                      	 :   29269647
+  NUM_UNCOND_BR               	 :      54106
+  NUM_CONDITIONAL_BR          	 :   29215542
+  NUM_MISPREDICTIONS          	 :   15286183
+  MISPRED_PER_1K_INST         	 :    23.8040
+Branch Predictor Framework by mars, 2020
+[parse_bt9_file] Begin parse BT9 file, please wait...
+[parse_bt9_file] End of parse BT9 file, total 112998784 lines parsed...
+  TRACE                       	 : ./traces/LONG_MOBILE-2.bt9.trace.gz
+  NUM_INSTRUCTIONS            	 : 1271560006
+  NUM_BR                      	 :  112993125
+  NUM_UNCOND_BR               	 :    1404677
+  NUM_CONDITIONAL_BR          	 :  111588449
+  NUM_MISPREDICTIONS          	 :   62402936
+  MISPRED_PER_1K_INST         	 :    49.0759
+Branch Predictor Framework by mars, 2020
+[parse_bt9_file] Begin parse BT9 file, please wait...
+[parse_bt9_file] End of parse BT9 file, total 163301474 lines parsed...
+  TRACE                       	 : ./traces/LONG_MOBILE-3.bt9.trace.gz
+  NUM_INSTRUCTIONS            	 : 1283893069
+  NUM_BR                      	 :  163272689
+  NUM_UNCOND_BR               	 :   26253684
+  NUM_CONDITIONAL_BR          	 :  137019006
+  NUM_MISPREDICTIONS          	 :   66043336
+  MISPRED_PER_1K_INST         	 :    51.4399
+Branch Predictor Framework by mars, 2020
+[parse_bt9_file] Begin parse BT9 file, please wait...
+[parse_bt9_file] End of parse BT9 file, total 13883507 lines parsed...
+  TRACE                       	 : ./traces/LONG_MOBILE-4.bt9.trace.gz
+  NUM_INSTRUCTIONS            	 :  999999976
+  NUM_BR                      	 :   13881337
+  NUM_UNCOND_BR               	 :      22885
+  NUM_CONDITIONAL_BR          	 :   13858453
+  NUM_MISPREDICTIONS          	 :    2335720
+  MISPRED_PER_1K_INST         	 :     2.3357
+Branch Predictor Framework by mars, 2020
+[parse_bt9_file] Begin parse BT9 file, please wait...
+[parse_bt9_file] End of parse BT9 file, total 16667959 lines parsed...
+  TRACE                       	 : ./traces/SHORT_MOBILE-1.bt9.trace.gz
+  NUM_INSTRUCTIONS            	 :  148974179
+  NUM_BR                      	 :   16662268
+  NUM_UNCOND_BR               	 :    4744843
+  NUM_CONDITIONAL_BR          	 :   11917426
+  NUM_MISPREDICTIONS          	 :    4888784
+  MISPRED_PER_1K_INST         	 :    32.8163
+Branch Predictor Framework by mars, 2020
+[parse_bt9_file] Begin parse BT9 file, please wait...
+[parse_bt9_file] End of parse BT9 file, total 54349501 lines parsed...
+  TRACE                       	 : ./traces/SHORT_MOBILE-2.bt9.trace.gz
+  NUM_INSTRUCTIONS            	 :  344783366
+  NUM_BR                      	 :   54336215
+  NUM_UNCOND_BR               	 :    3180020
+  NUM_CONDITIONAL_BR          	 :   51156196
+  NUM_MISPREDICTIONS          	 :   19091854
+  MISPRED_PER_1K_INST         	 :    55.3735
+Branch Predictor Framework by mars, 2020
+[parse_bt9_file] Begin parse BT9 file, please wait...
+[parse_bt9_file] End of parse BT9 file, total 770171 lines parsed...
+  TRACE                       	 : ./traces/SHORT_MOBILE-24.bt9.trace.gz
+  NUM_INSTRUCTIONS            	 :  100106755
+  NUM_BR                      	 :     770140
+  NUM_UNCOND_BR               	 :          1
+  NUM_CONDITIONAL_BR          	 :     770140
+  NUM_MISPREDICTIONS          	 :         47
+  MISPRED_PER_1K_INST         	 :     0.0005
+Branch Predictor Framework by mars, 2020
+[parse_bt9_file] Begin parse BT9 file, please wait...
+[parse_bt9_file] End of parse BT9 file, total 2834808 lines parsed...
+  TRACE                       	 : ./traces/SHORT_MOBILE-25.bt9.trace.gz
+  NUM_INSTRUCTIONS            	 :   99206158
+  NUM_BR                      	 :    2834777
+  NUM_UNCOND_BR               	 :          1
+  NUM_CONDITIONAL_BR          	 :    2834777
+  NUM_MISPREDICTIONS          	 :        345
+  MISPRED_PER_1K_INST         	 :     0.0035
+Branch Predictor Framework by mars, 2020
+[parse_bt9_file] Begin parse BT9 file, please wait...
+[parse_bt9_file] End of parse BT9 file, total 4052 lines parsed...
+  TRACE                       	 : ./traces/SHORT_MOBILE-27.bt9.trace.gz
+  NUM_INSTRUCTIONS            	 :     220814
+  NUM_BR                      	 :       4004
+  NUM_UNCOND_BR               	 :        304
+  NUM_CONDITIONAL_BR          	 :       3701
+  NUM_MISPREDICTIONS          	 :        501
+  MISPRED_PER_1K_INST         	 :     2.2689
+Branch Predictor Framework by mars, 2020
+[parse_bt9_file] Begin parse BT9 file, please wait...
+[parse_bt9_file] End of parse BT9 file, total 230852 lines parsed...
+  TRACE                       	 : ./traces/SHORT_MOBILE-28.bt9.trace.gz
+  NUM_INSTRUCTIONS            	 :   14055614
+  NUM_BR                      	 :     230804
+  NUM_UNCOND_BR               	 :        304
+  NUM_CONDITIONAL_BR          	 :     230501
+  NUM_MISPREDICTIONS          	 :      25701
+  MISPRED_PER_1K_INST         	 :     1.8285
+Branch Predictor Framework by mars, 2020
+[parse_bt9_file] Begin parse BT9 file, please wait...
+[parse_bt9_file] End of parse BT9 file, total 16003531 lines parsed...
+  TRACE                       	 : ./traces/SHORT_MOBILE-3.bt9.trace.gz
+  NUM_INSTRUCTIONS            	 :  101127141
+  NUM_BR                      	 :   15996915
+  NUM_UNCOND_BR               	 :     103520
+  NUM_CONDITIONAL_BR          	 :   15893396
+  NUM_MISPREDICTIONS          	 :    1462777
+  MISPRED_PER_1K_INST         	 :    14.4647
+Branch Predictor Framework by mars, 2020
+[parse_bt9_file] Begin parse BT9 file, please wait...
+[parse_bt9_file] End of parse BT9 file, total 123361256 lines parsed...
+  TRACE                       	 : ./traces/SHORT_MOBILE-30.bt9.trace.gz
+  NUM_INSTRUCTIONS            	 :  658661227
+  NUM_BR                      	 :  123358312
+  NUM_UNCOND_BR               	 :   11682421
+  NUM_CONDITIONAL_BR          	 :  111675892
+  NUM_MISPREDICTIONS          	 :   59534364
+  MISPRED_PER_1K_INST         	 :    90.3869
+Branch Predictor Framework by mars, 2020
+[parse_bt9_file] Begin parse BT9 file, please wait...
+[parse_bt9_file] End of parse BT9 file, total 17849367 lines parsed...
+  TRACE                       	 : ./traces/SHORT_MOBILE-4.bt9.trace.gz
+  NUM_INSTRUCTIONS            	 :  372505316
+  NUM_BR                      	 :   17837676
+  NUM_UNCOND_BR               	 :     858556
+  NUM_CONDITIONAL_BR          	 :   16979121
+  NUM_MISPREDICTIONS          	 :    4457228
+  MISPRED_PER_1K_INST         	 :    11.9655

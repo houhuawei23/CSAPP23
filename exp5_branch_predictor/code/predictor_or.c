@@ -61,7 +61,7 @@ void PREDICTOR_init(void)
 char GetPrediction(UINT64 PC)
 {
 
-	UINT32 phtIndex = (PC ^ ghr) % (numPhtEntries);
+	UINT32 phtIndex = (PC | ghr) % (numPhtEntries);
 	UINT32 phtCounter = pht[phtIndex];
 
 	if (phtCounter > (PHT_CTR_MAX / 2))
