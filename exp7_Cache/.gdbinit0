@@ -1,0 +1,7 @@
+b AccessDataCache
+display/t Address
+display/t BlockOffset
+display/t CacheLineAddress
+display/t AddressTag
+display MissFlag
+display DCache[CacheLineAddress]

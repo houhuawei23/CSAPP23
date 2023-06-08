@@ -15,19 +15,17 @@
 #include "zlib.h"
 
 #ifdef _WIN64
-	#pragma comment(lib,"..\\zlibstat-win64.lib")
-#elif  _WIN32
-	#pragma comment(lib,"..\\zlibstat-win32.lib")
+#pragma comment(lib, "..\\zlibstat-win64.lib")
+#elif _WIN32
+#pragma comment(lib, "..\\zlibstat-win32.lib")
 #endif
-
-
 
 struct BT9_struct BT9;
 
 PROCESS_STATE_ENUM PROCESS_STATE;
 
 #define CHUNK 16384
-
+// #define CHUNK 50
 char *out_buf_ptr;
 char in[CHUNK];
 char out[CHUNK];
@@ -35,105 +33,119 @@ char linebuf[CHUNK];
 
 int get_line_from_bt9(z_stream *strm, FILE *source)
 {
-    int ret;
-	int need_read_file = 1;
+	int ret;
+	int need_read_file = 1; // read compressed file
 	char *curr_line_ptr;
 
 	curr_line_ptr = linebuf;
-	memset(linebuf, 0, sizeof(linebuf));
+	// memset(linebuf, 0, CHUNK);
 
 	// 如果out_buf_ptr为空，或者out中并没有包含换行符，则需要从流中解压
 	if (out_buf_ptr == NULL)
 		need_read_file = 1;
-	else
-	for (; out_buf_ptr < out+CHUNK - strm->avail_out; out_buf_ptr++, curr_line_ptr++)
-	{
-		*curr_line_ptr = *out_buf_ptr;
-		if (*out_buf_ptr == 0)
-			break;
-		if (*out_buf_ptr == '\n' || *out_buf_ptr == '\r')
+	else // out_buf_ptr不为空，且out中包含换行符，则直接从out中读取
+		for (; out_buf_ptr < out + CHUNK - strm->avail_out; out_buf_ptr++, curr_line_ptr++)
 		{
-			out_buf_ptr++;
-			return Z_OK;
+			// strm->avail_out 输出缓冲区剩余的空间大小
+			// 若输出缓冲区还有未读取的元素(out_buf_ptr < out + CHUNK - strm->avail_out)，
+			// 则将out缓冲区中的数据拷贝到linebuf中
+			*curr_line_ptr = *out_buf_ptr; // 拷贝
+			if (*out_buf_ptr == 0)		   // 如果拷贝的是空字符，则跳出循环
+				break;
+			if (*out_buf_ptr == '\n' || *out_buf_ptr == '\r') // 如果拷贝的是换行符，即读完一行了，则返回 Z_OK
+			{
+				out_buf_ptr++;
+				*curr_line_ptr = 0;
+				return Z_OK;
+			}
 		}
-	}
-
-	again:
-    if (need_read_file)
+	// 到此已保证out缓冲区为空了，可以继续从in缓冲区中解压数据了
+again:
+	if (need_read_file)
 	{
-		if (strm->avail_in == 0)
+		if (strm->avail_in == 0) // 如果输入缓冲区为空，则从文件中读取数据
 		{
+			// 从压缩文件中读取数据到输入缓冲区，最大读取 CHUNK 个字节，返回实际读取的字节数
 			strm->avail_in = (uInt)fread(in, 1, CHUNK, source);
-			if (strm->avail_in == 0)
+			if (strm->avail_in == 0) // 若读取的字节数为0，则说明已经读取完毕，返回 0
 				need_read_file = 0;
-			if (ferror(source))
+			if (ferror(source)) // 如果读取失败，则返回 Z_ERRNO
 				return Z_ERRNO;
-			strm->next_in = (unsigned char *)in;
+			strm->next_in = (unsigned char *)in; // 设置输入缓冲区的起始位置
 		}
 
-        /* run inflate() on input until output buffer not full */
-        if (1) {
-            strm->avail_out = CHUNK;
-            strm->next_out = (unsigned char *)out;
-	
-            ret = inflate(strm, Z_NO_FLUSH);
-            assert(ret != Z_STREAM_ERROR);  /* state not clobbered */
-            switch (ret) {
-            case Z_NEED_DICT:
-                ret = Z_DATA_ERROR;     /* and fall through */
-                return ret;
-            case Z_DATA_ERROR:
-                return ret;
-            case Z_MEM_ERROR:
-                return ret;
-            }
+		/* run inflate() on input until output buffer not full */
+		if (1)
+		{
+			// 从头开始填充out输出缓冲区
+			strm->avail_out = CHUNK;
+			strm->next_out = (unsigned char *)out;
 
+			ret = inflate(strm, Z_NO_FLUSH); // 解压
+			assert(ret != Z_STREAM_ERROR);	 /* state not clobbered */
+			switch (ret)
+			{
+			case Z_NEED_DICT:		// 需要输入字典？？
+				ret = Z_DATA_ERROR; /* and fall through */
+				return ret;
+			case Z_DATA_ERROR:
+				return ret;
+			case Z_MEM_ERROR:
+				return ret;
+			}
+			// 确实解压出数据到out缓冲区了
 			if (strm->avail_out < CHUNK)
 			{
 				ret = Z_STREAM_END;
+				// 将out缓冲区中的数据拷贝到linebuf中
 				for (out_buf_ptr = out; out_buf_ptr < out + CHUNK - strm->avail_out; out_buf_ptr++, curr_line_ptr++)
 				{
 					*curr_line_ptr = *out_buf_ptr;
-						
+
 					if (*out_buf_ptr == '\n' || *out_buf_ptr == '\r')
 					{
 						out_buf_ptr++;
 						return Z_OK;
 					}
 				}
-
+				// 前面没有遇到换行符，而是out缓冲区中的数据已经读完了，需要从文件中继续读取数据
 				if (ret == Z_STREAM_END)
 					goto again;
 			}
-        }
-    }
+		}
+	}
 
-    return ret;
+	return ret;
 }
 
 void Trim(char *src)
 {
-	char *begin  = src;
-	char *end    = src;
+	char *begin = src;
+	char *end = src;
 
-	while (*end++);
+	while (*end++)
+		;
 
-	if (begin  == end ) return;
+	if (begin == end)
+		return;
 
-	while (*begin  == ' ' || *begin  == '\t')
+	while (*begin == ' ' || *begin == '\t')
 		++begin;
-	while ((*end) == '\0' || *end  == ' ' || *end  == '\t' || *end == '\n' || *end == '\r')
+	while ((*end) == '\0' || *end == ' ' || *end == '\t' || *end == '\n' || *end == '\r')
 		--end;
 
-	if (begin > end ) {
-		*src  = '\0';  return;
+	if (begin > end)
+	{
+		*src = '\0';
+		return;
 	}
-	while (begin  != end ) {
+	while (begin != end)
+	{
 		*src++ = *begin++;
 	}
 
 	*src++ = *end;
-	*src  = '\0';
+	*src = '\0';
 
 	return;
 }
@@ -144,7 +156,7 @@ char **split_space(const char *source, int *field_count)
 	int j, n = 0;
 	int count = 1;
 	int len = (int)strlen(source);
-	char *tmp = (char *)malloc(len +1);
+	char *tmp = (char *)malloc(len + 1);
 	tmp[0] = '\0';
 
 	*field_count = 0;
@@ -152,11 +164,11 @@ char **split_space(const char *source, int *field_count)
 	{
 		if ((source[i] == ' ' || source[i] == '\t') && source[i + 1] == '\0')
 			continue;
-		else if ((source[i] == ' ' || source[i] == '\t') && (source[i+1] != ' ' && source[i+1] != '\t'))
+		else if ((source[i] == ' ' || source[i] == '\t') && (source[i + 1] != ' ' && source[i + 1] != '\t'))
 			count++;
 	}
 	// 多分配一个char*，是为了设置结束标志
-	pt = (char**)malloc((count + 1) * sizeof(char*));
+	pt = (char **)malloc((count + 1) * sizeof(char *));
 
 	count = 0;
 	for (int i = 0; i < len; ++i)
@@ -164,9 +176,9 @@ char **split_space(const char *source, int *field_count)
 		if (i == len - 1 && (source[i] != ' ' && source[i] != '\t'))
 		{
 			tmp[n++] = source[i];
-			tmp[n] = '\0';  // 字符串末尾添加空字符
+			tmp[n] = '\0'; // 字符串末尾添加空字符
 			j = (int)strlen(tmp) + 1;
-			pt[count] = (char*)malloc(j * sizeof(char));
+			pt[count] = (char *)malloc(j * sizeof(char));
 			strncpy(pt[count++], tmp, j);
 		}
 		else if ((source[i] == ' ' || source[i] == '\t'))
@@ -174,9 +186,9 @@ char **split_space(const char *source, int *field_count)
 			j = (int)strlen(tmp);
 			if (j != 0)
 			{
-				tmp[n] = '\0';  // 字符串末尾添加空字符
-				pt[count] = (char*)malloc((j + 1) * sizeof(char));
-				strncpy(pt[count++], tmp, (j+1));
+				tmp[n] = '\0'; // 字符串末尾添加空字符
+				pt[count] = (char *)malloc((j + 1) * sizeof(char));
+				strncpy(pt[count++], tmp, (j + 1));
 				// 重置tmp
 				n = 0;
 				tmp[0] = '\0';
@@ -191,7 +203,6 @@ char **split_space(const char *source, int *field_count)
 	*field_count = count;
 	return pt;
 }
-
 
 int process_bt9_line(char *linebuf, UINT64 lineno)
 {
@@ -219,7 +230,6 @@ int process_bt9_line(char *linebuf, UINT64 lineno)
 			{
 				ret = 0;
 				break;
-
 			}
 			if (_strcmpi(pt[0], "bt9_minor_version:") == 0)
 			{
@@ -368,7 +378,6 @@ int process_bt9_line(char *linebuf, UINT64 lineno)
 				break;
 			}
 
-
 			if (_strcmpi(pt[0], "NODE") != 0)
 			{
 				printf("[%s] line %lld Wrong node definition.. unknown keyword %s\n", __func__, lineno, pt[0]);
@@ -430,7 +439,6 @@ int process_bt9_line(char *linebuf, UINT64 lineno)
 					ret = -2;
 					break;
 				}
-
 			}
 
 			BT9.NODE[i].virtual_address = virtual_address;
@@ -515,18 +523,18 @@ int process_bt9_line(char *linebuf, UINT64 lineno)
 			BT9.BT9_EDGE_count++;
 			break;
 		case PROCESS_TRACE:
-		    printf("[%s] Error! Should not be here!!\n", __func__);
-		    break;
+			printf("[%s] Error! Should not be here!!\n", __func__);
+			break;
 		}
 
 		free(pt);
 	}
 	else
 	{
-		if (BT9.BT9_TRACE_count % (1024*1024) == 0)
+		if (BT9.BT9_TRACE_count % (1024 * 1024) == 0)
 		{
 			// 重新扩充原来的大小，扩充1024*1024份记录
-			BT9.TRACE = (UINT16 *)realloc(BT9.TRACE, ((BT9.BT9_TRACE_count / (1024*1024)) + 1) * 1024 * 1024* sizeof(UINT16));
+			BT9.TRACE = (UINT16 *)realloc(BT9.TRACE, ((BT9.BT9_TRACE_count / (1024 * 1024)) + 1) * 1024 * 1024 * sizeof(UINT16));
 		}
 
 		UINT16 TRACE_ID = (UINT16)atoi(linebuf);
@@ -536,7 +544,6 @@ int process_bt9_line(char *linebuf, UINT64 lineno)
 				ret = 1;
 		}
 		BT9.TRACE[BT9.BT9_TRACE_count++] = TRACE_ID;
-
 	}
 	return ret;
 }
@@ -545,8 +552,8 @@ int parse_bt9_file(char *filename)
 {
 	FILE *source;
 	UINT64 lineno;
-	int ret_get_line=0;
-	int ret_parse_line=0;
+	int ret_get_line = 0;
+	int ret_parse_line = 0;
 	z_stream strm;
 
 	printf("[%s] Begin parse BT9 file, please wait...\n", __func__);
@@ -574,7 +581,7 @@ int parse_bt9_file(char *filename)
 	strm.opaque = Z_NULL;
 	strm.avail_in = 0;
 	strm.next_in = Z_NULL;
-	ret_get_line = inflateInit2(&strm, 15 + 32); //15 window bits, and the +32 tells zlib to to detect if using gzip or zlib
+	ret_get_line = inflateInit2(&strm, 15 + 32); // 15 window bits, and the +32 tells zlib to to detect if using gzip or zlib
 	if (ret_get_line != Z_OK)
 	{
 		fclose(source);
@@ -584,11 +591,11 @@ int parse_bt9_file(char *filename)
 	do
 	{
 		lineno++;
-		ret_get_line = get_line_from_bt9(&strm, source);	// 从文件中读取1行
+		ret_get_line = get_line_from_bt9(&strm, source); // 从文件中读取1行
 		if (ret_get_line != Z_OK && ret_get_line != Z_STREAM_END)
 			break;
 
-		ret_parse_line = process_bt9_line(linebuf, lineno);		// 分析处理1行
+		ret_parse_line = process_bt9_line(linebuf, lineno); // 分析处理1行
 		if (ret_parse_line == 1)
 			break;
 	} while (1);
@@ -625,7 +632,7 @@ int SimBT9(struct BT9_struct *BT)
 	UINT64 uncond_br_Count = 0LL;
 
 	PREDICTOR_init();
-	
+
 	// 跳过第0条，无效分支
 	for (i = 1; i < BT->BT9_TRACE_count; i++)
 	{
@@ -636,9 +643,9 @@ int SimBT9(struct BT9_struct *BT)
 		resolveDir = EDGE->taken;
 		branchTarget = EDGE->br_virt_target;
 		optype = src_NODE->optype;
-		
+
 		// 仅仅处理条件跳转指令。注意：貌似测试集里面，只有OPTYPE_JMP_DIRECT_COND
-		if (optype == OPTYPE_RET_COND || optype == OPTYPE_JMP_DIRECT_COND  || optype == OPTYPE_JMP_INDIRECT_COND || optype == OPTYPE_CALL_DIRECT_COND || optype == OPTYPE_CALL_INDIRECT_COND)
+		if (optype == OPTYPE_RET_COND || optype == OPTYPE_JMP_DIRECT_COND || optype == OPTYPE_JMP_INDIRECT_COND || optype == OPTYPE_CALL_DIRECT_COND || optype == OPTYPE_CALL_INDIRECT_COND)
 		{
 			cond_br_Count++;
 			predDir = GetPrediction(PC);
@@ -652,10 +659,10 @@ int SimBT9(struct BT9_struct *BT)
 	PREDICTOR_free();
 
 	printf("  NUM_INSTRUCTIONS            \t : %10llu\n", BT->total_instruction_count);
-	printf("  NUM_BR                      \t : %10llu\n", BT->branch_instruction_count-1);
+	printf("  NUM_BR                      \t : %10llu\n", BT->branch_instruction_count - 1);
 	printf("  NUM_UNCOND_BR               \t : %10llu\n", uncond_br_Count);
 	printf("  NUM_CONDITIONAL_BR          \t : %10llu\n", cond_br_Count);
 	printf("  NUM_MISPREDICTIONS          \t : %10llu\n", MISS_Count);
-	printf("  MISPRED_PER_1K_INST         \t : %10.4f\n", 1000.0*(double)(MISS_Count) / (double)(BT->total_instruction_count));
+	printf("  MISPRED_PER_1K_INST         \t : %10.4f\n", 1000.0 * (double)(MISS_Count) / (double)(BT->total_instruction_count));
 	return 0;
 }

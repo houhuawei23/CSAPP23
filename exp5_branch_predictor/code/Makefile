@@ -8,7 +8,7 @@ LDFLAGS +=
 
 LDLIBS   += -lz
 
-CPPFLAGS := -O3 -Wall -Wextra -Winline -Winit-self -Wno-sequence-point\
+CPPFLAGS := -pg -Og -g -Wall -Wextra -Winline -Winit-self -Wno-sequence-point\
            -Wno-unused-function -Wno-inline -fPIC -W -Wcast-qual -Wpointer-arith
 
 PROGRAMS := predictor

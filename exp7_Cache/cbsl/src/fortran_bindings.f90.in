@@ -1,0 +1,471 @@
+!
+!  Copyright 2019 Yuta Hirokawa (University of Tsukuba)
+!
+!  Licensed under the Apache License, Version 2.0 (the "License");
+!  you may not use this file except in compliance with the License.
+!  You may obtain a copy of the License at
+!
+!      http://www.apache.org/licenses/LICENSE-2.0
+!
+!  Unless required by applicable law or agreed to in writing, software
+!  distributed under the License is distributed on an "AS IS" BASIS,
+!  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+!  See the License for the specific language governing permissions and
+!  limitations under the License.
+!
+module cbslf
+  use, intrinsic :: iso_c_binding
+  implicit none
+
+  type cbslf_context
+    integer(c_intptr_t) :: ctx
+  end type
+  public :: cbslf_context
+
+  public :: cbslf_store_mode
+  public :: cbslf_load_mode
+  public :: cbslf_unknown_mode
+
+  public :: cbslf_success
+  public :: cbslf_error
+
+  public :: cbslf_open
+  public :: cbslf_close
+  public :: cbslf_flush
+
+  public :: cbslf_write
+  public :: cbslf_read
+  public :: cbslf_record
+  public :: cbslf_record_heap
+
+  public :: cbslf_get_mode
+  public :: cbslf_set_compression_level
+  public :: cbslf_get_compression_level
+
+#define PASTE(a,b) a##b
+#define CONCAT(a,b) PASTE(a,b)
+
+#define SET_ERRCODE(CODE) \
+        if (present(errcode)) errcode = CODE
+
+#define SET_ERRCODE_COND(COND) \
+        if (present(errcode)) then \
+__NL__    if (COND) then \
+__NL__      errcode = cbslf_success \
+__NL__    else \
+__NL__      errcode = cbslf_error \
+__NL__    end if \
+__NL__  end if
+
+#define FORTRAN_ARRAY_1       :
+#define FORTRAN_ARRAY_2       :,:
+#define FORTRAN_ARRAY_3       :,:,:
+#define FORTRAN_ARRAY_4       :,:,:,:
+#define FORTRAN_ARRAY_5       :,:,:,:,:
+#define FORTRAN_ARRAY_6       :,:,:,:,:,:
+#define FORTRAN_ARRAY_7       :,:,:,:,:,:,:
+
+#define FORTRAN_ARRAY_VALUE_1 1
+#define FORTRAN_ARRAY_VALUE_2 1,1
+#define FORTRAN_ARRAY_VALUE_3 1,1,1
+#define FORTRAN_ARRAY_VALUE_4 1,1,1,1
+#define FORTRAN_ARRAY_VALUE_5 1,1,1,1,1
+#define FORTRAN_ARRAY_VALUE_6 1,1,1,1,1,1
+#define FORTRAN_ARRAY_VALUE_7 1,1,1,1,1,1,1
+
+#define FORTRAN_ARRAY_SHAPE_1 lb(1):ub(1)
+#define FORTRAN_ARRAY_SHAPE_2 lb(1):ub(1),lb(2):ub(2)
+#define FORTRAN_ARRAY_SHAPE_3 lb(1):ub(1),lb(2):ub(2),lb(3):ub(3)
+#define FORTRAN_ARRAY_SHAPE_4 lb(1):ub(1),lb(2):ub(2),lb(3):ub(3),lb(4):ub(4)
+#define FORTRAN_ARRAY_SHAPE_5 lb(1):ub(1),lb(2):ub(2),lb(3):ub(3),lb(4):ub(4),lb(5):ub(5)
+#define FORTRAN_ARRAY_SHAPE_6 lb(1):ub(1),lb(2):ub(2),lb(3):ub(3),lb(4):ub(4),lb(5):ub(5),lb(6):ub(6)
+#define FORTRAN_ARRAY_SHAPE_7 lb(1):ub(1),lb(2):ub(2),lb(3):ub(3),lb(4):ub(4),lb(5):ub(5),lb(6):ub(6),lb(7):ub(7)
+
+#define DECLARE_SCALAR_INTERFACE(SAVE_LOAD,ROUTINE_NAME)  \
+          module procedure CONCAT(CONCAT(SAVE_LOAD,_scalar_),ROUTINE_NAME)
+
+#define DECLARE_ARRAY_INTERFACE_N(SAVE_LOAD,ROUTINE_NAME,DIMS)  \
+          module procedure CONCAT(CONCAT(SAVE_LOAD,CONCAT(_array_,DIMS)),CONCAT(_,ROUTINE_NAME))
+
+#define DECLARE_ARRAY_INTERFACE(SAVE_LOAD,ROUTINE_NAME) \
+          DECLARE_SCALAR_INTERFACE(SAVE_LOAD,ROUTINE_NAME) \
+__NL__    DECLARE_ARRAY_INTERFACE_N(SAVE_LOAD,ROUTINE_NAME,1) \
+__NL__    DECLARE_ARRAY_INTERFACE_N(SAVE_LOAD,ROUTINE_NAME,2) \
+__NL__    DECLARE_ARRAY_INTERFACE_N(SAVE_LOAD,ROUTINE_NAME,3) \
+__NL__    DECLARE_ARRAY_INTERFACE_N(SAVE_LOAD,ROUTINE_NAME,4) \
+__NL__    DECLARE_ARRAY_INTERFACE_N(SAVE_LOAD,ROUTINE_NAME,5) \
+__NL__    DECLARE_ARRAY_INTERFACE_N(SAVE_LOAD,ROUTINE_NAME,6) \
+__NL__    DECLARE_ARRAY_INTERFACE_N(SAVE_LOAD,ROUTINE_NAME,7) \
+
+#define DECLARE_ARRAY_INTERFACE_ALLOCATABLE_N(SAVE_LOAD,ROUTINE_NAME,DIMS)  \
+          module procedure CONCAT(CONCAT(SAVE_LOAD,CONCAT(_array_heap_,DIMS)),CONCAT(_,ROUTINE_NAME))
+
+#define DECLARE_ARRAY_INTERFACE_ALLOCATABLE(SAVE_LOAD,ROUTINE_NAME) \
+          DECLARE_ARRAY_INTERFACE_ALLOCATABLE_N(SAVE_LOAD,ROUTINE_NAME,1) \
+__NL__    DECLARE_ARRAY_INTERFACE_ALLOCATABLE_N(SAVE_LOAD,ROUTINE_NAME,2) \
+__NL__    DECLARE_ARRAY_INTERFACE_ALLOCATABLE_N(SAVE_LOAD,ROUTINE_NAME,3) \
+__NL__    DECLARE_ARRAY_INTERFACE_ALLOCATABLE_N(SAVE_LOAD,ROUTINE_NAME,4) \
+__NL__    DECLARE_ARRAY_INTERFACE_ALLOCATABLE_N(SAVE_LOAD,ROUTINE_NAME,5) \
+__NL__    DECLARE_ARRAY_INTERFACE_ALLOCATABLE_N(SAVE_LOAD,ROUTINE_NAME,6) \
+__NL__    DECLARE_ARRAY_INTERFACE_ALLOCATABLE_N(SAVE_LOAD,ROUTINE_NAME,7)
+
+#define IMPLEMENT_SCALAR_INTERFACE(ROUTINE_NAME,DATA_TYPE)  \
+          subroutine CONCAT(write_scalar_,ROUTINE_NAME)(ctx, val, errcode) \
+__NL__      use, intrinsic :: iso_c_binding, only: c_sizeof \
+__NL__      implicit none \
+__NL__      type(cbslf_context), intent(in) :: ctx \
+__NL__      DATA_TYPE, target, intent(in) :: val \
+__NL__      integer(4), intent(out), optional :: errcode \
+__NL__      integer(c_int64_t) :: psize \
+__NL__      integer(4) :: ret \
+__NL__      psize = c_sizeof(val) \
+__NL__      ret = cbsl_write(ctx%ctx, loc(val), psize) \
+__NL__      SET_ERRCODE(ret) \
+__NL__    end subroutine \
+__NL__    subroutine CONCAT(read_scalar_,ROUTINE_NAME)(ctx, val, errcode) \
+__NL__      use, intrinsic :: iso_c_binding, only: c_sizeof \
+__NL__      implicit none \
+__NL__      type(cbslf_context), intent(in) :: ctx \
+__NL__      DATA_TYPE, target, intent(out) :: val \
+__NL__      integer(4), intent(out), optional :: errcode \
+__NL__      integer(c_int64_t) :: psize \
+__NL__      integer(4) :: ret \
+__NL__      psize = c_sizeof(val) \
+__NL__      ret = cbsl_read(ctx%ctx, loc(val), psize) \
+__NL__      SET_ERRCODE(ret) \
+__NL__    end subroutine \
+__NL__    subroutine CONCAT(record_scalar_,ROUTINE_NAME)(ctx, val, errcode) \
+__NL__      use, intrinsic :: iso_c_binding, only: c_sizeof \
+__NL__      implicit none \
+__NL__      type(cbslf_context), intent(in) :: ctx \
+__NL__      DATA_TYPE, target, intent(inout) :: val \
+__NL__      integer(4), intent(out), optional :: errcode \
+__NL__      integer(c_int64_t) :: psize \
+__NL__      integer(4) :: ret \
+__NL__      psize = c_sizeof(val) \
+__NL__      ret = cbsl_record(ctx%ctx, loc(val), psize) \
+__NL__      SET_ERRCODE(ret) \
+__NL__    end subroutine
+
+#define IMPLEMENT_ARRAY_INTERFACE_N(ROUTINE_NAME,DATA_TYPE,DIMS)  \
+__NL__    subroutine CONCAT(CONCAT(write_array_,CONCAT(DIMS,_)),ROUTINE_NAME)(ctx, val, errcode) \
+__NL__      use, intrinsic :: iso_c_binding, only: c_sizeof, c_int64_t \
+__NL__      implicit none \
+__NL__      type(cbslf_context), intent(in) :: ctx \
+__NL__      DATA_TYPE, intent(in) :: val(CONCAT(FORTRAN_ARRAY_,DIMS)) \
+__NL__      integer(4), intent(out), optional :: errcode \
+__NL__      integer(4) :: lb(DIMS),ub(DIMS),nsize,i \
+__NL__      integer(c_int64_t) :: bsize \
+__NL__      integer(4) :: ret \
+__NL__      nsize   = size(val, kind=kind(nsize)) \
+__NL__      do i=1,size(lb) \
+__NL__        lb(i) = lbound(val, i, kind(lb(i))) \
+__NL__        ub(i) = ubound(val, i, kind(ub(i))) \
+__NL__      end do \
+__NL__      call cbslf_write(ctx, nsize, ret) \
+__NL__      bsize = size(lb) * c_sizeof(val(CONCAT(FORTRAN_ARRAY_VALUE_,DIMS))) \
+__NL__      ret   = iand(cbsl_write(ctx%ctx, loc(lb), bsize), ret) \
+__NL__      ret   = iand(cbsl_write(ctx%ctx, loc(ub), bsize), ret) \
+__NL__      bsize = nsize * c_sizeof(val(CONCAT(FORTRAN_ARRAY_VALUE_,DIMS))) \
+__NL__      ret   = iand(cbsl_write(ctx%ctx, loc(val), bsize), ret) \
+__NL__      SET_ERRCODE(ret) \
+__NL__    end subroutine \
+__NL__    subroutine CONCAT(CONCAT(read_array_,CONCAT(DIMS,_)),ROUTINE_NAME)(ctx, val, errcode) \
+__NL__      use, intrinsic :: iso_c_binding, only: c_sizeof, c_int64_t \
+__NL__      implicit none \
+__NL__      type(cbslf_context), intent(in) :: ctx \
+__NL__      DATA_TYPE, intent(out) :: val(CONCAT(FORTRAN_ARRAY_,DIMS)) \
+__NL__      integer(4), intent(out), optional :: errcode \
+__NL__      integer(4) :: lb(DIMS),ub(DIMS),nsize \
+__NL__      integer(c_int64_t) :: bsize \
+__NL__      integer(4) :: ret \
+__NL__      ret = cbslf_error \
+__NL__      if (size(val) > 0) then \
+__NL__        call cbslf_read(ctx, nsize, ret) \
+__NL__        if (ret == cbslf_success .and. nsize > 0) then \
+__NL__          bsize = size(lb) * c_sizeof(val(CONCAT(FORTRAN_ARRAY_VALUE_,DIMS))) \
+__NL__          ret   = iand(cbsl_read(ctx%ctx, loc(lb), bsize), ret) \
+__NL__          ret   = iand(cbsl_read(ctx%ctx, loc(ub), bsize), ret) \
+__NL__          bsize = nsize * c_sizeof(val(CONCAT(FORTRAN_ARRAY_VALUE_,DIMS))) \
+__NL__          ret   = iand(cbsl_read(ctx%ctx, loc(val), bsize), ret) \
+__NL__        else \
+__NL__          ret = cbslf_error \
+__NL__        end if \
+__NL__      end if \
+__NL__      SET_ERRCODE(ret) \
+__NL__    end subroutine \
+__NL__    subroutine CONCAT(CONCAT(record_array_,CONCAT(DIMS,_)),ROUTINE_NAME)(ctx, val, errcode) \
+__NL__      use, intrinsic :: iso_c_binding, only: c_sizeof, c_int64_t \
+__NL__      implicit none \
+__NL__      type(cbslf_context), intent(in) :: ctx \
+__NL__      DATA_TYPE, allocatable, intent(inout) :: val(CONCAT(FORTRAN_ARRAY_,DIMS)) \
+__NL__      integer(4), intent(out), optional :: errcode \
+__NL__      integer(4) :: mode,ret \
+__NL__      mode = cbslf_get_mode(ctx) \
+__NL__      select case(mode) \
+__NL__        case(cbslf_store_mode) \
+__NL__          call cbslf_write(ctx, val, ret) \
+__NL__        case(cbslf_load_mode) \
+__NL__          call cbslf_read(ctx, val, ret) \
+__NL__        case default \
+__NL__          ret = cbslf_error \
+__NL__      end select \
+__NL__      SET_ERRCODE(ret) \
+__NL__    end subroutine \
+__NL__    subroutine CONCAT(CONCAT(record_array_heap_,CONCAT(DIMS,_)),ROUTINE_NAME)(ctx, val, errcode) \
+__NL__      use, intrinsic :: iso_c_binding, only: c_sizeof, c_int64_t \
+__NL__      implicit none \
+__NL__      type(cbslf_context), intent(in) :: ctx \
+__NL__      DATA_TYPE, allocatable, intent(inout) :: val(CONCAT(FORTRAN_ARRAY_,DIMS)) \
+__NL__      integer(4), intent(out), optional :: errcode \
+__NL__      integer(4) :: lb(DIMS),ub(DIMS),nsize,mode \
+__NL__      integer(4) :: ret \
+__NL__      integer(c_int64_t) :: bsize \
+__NL__      mode = cbslf_get_mode(ctx) \
+__NL__      select case(mode) \
+__NL__        case(cbslf_store_mode) \
+__NL__          call cbslf_write(ctx, val, ret) \
+__NL__        case(cbslf_load_mode) \
+__NL__          if (allocated(val)) then \
+__NL__            call cbslf_read(ctx, val, ret) \
+__NL__          else \
+__NL__            call cbslf_read(ctx, nsize, ret) \
+__NL__            if (ret == cbslf_success .and. nsize > 0) then \
+__NL__              bsize = size(lb) * c_sizeof(val(CONCAT(FORTRAN_ARRAY_VALUE_,DIMS))) \
+__NL__              ret   = iand(cbsl_read(ctx%ctx, loc(lb), bsize), ret) \
+__NL__              ret   = iand(cbsl_read(ctx%ctx, loc(ub), bsize), ret) \
+__NL__              allocate(val(CONCAT(FORTRAN_ARRAY_SHAPE_,DIMS))) \
+__NL__              bsize = nsize * c_sizeof(val(CONCAT(FORTRAN_ARRAY_VALUE_,DIMS))) \
+__NL__              ret   = iand(cbsl_read(ctx%ctx, loc(val), bsize), ret) \
+__NL__            else \
+__NL__              ret = cbslf_error \
+__NL__            end if \
+__NL__          end if \
+__NL__        case default \
+__NL__          ret = cbslf_error \
+__NL__      end select \
+__NL__      SET_ERRCODE(ret) \
+__NL__    end subroutine
+
+#define IMPLEMENT_ARRAY_INTERFACE(ROUTINE_NAME,DATA_TYPE)  \
+          IMPLEMENT_SCALAR_INTERFACE(ROUTINE_NAME,DATA_TYPE) \
+          IMPLEMENT_ARRAY_INTERFACE_N(ROUTINE_NAME,DATA_TYPE,1) \
+          IMPLEMENT_ARRAY_INTERFACE_N(ROUTINE_NAME,DATA_TYPE,2) \
+          IMPLEMENT_ARRAY_INTERFACE_N(ROUTINE_NAME,DATA_TYPE,3) \
+          IMPLEMENT_ARRAY_INTERFACE_N(ROUTINE_NAME,DATA_TYPE,4) \
+          IMPLEMENT_ARRAY_INTERFACE_N(ROUTINE_NAME,DATA_TYPE,5) \
+          IMPLEMENT_ARRAY_INTERFACE_N(ROUTINE_NAME,DATA_TYPE,6) \
+          IMPLEMENT_ARRAY_INTERFACE_N(ROUTINE_NAME,DATA_TYPE,7)
+
+!======
+private
+
+  integer(8),   parameter :: CBSL_VERSION         = @cbsl_VERSION_MAJOR@@cbsl_VERSION_MINOR@@cbsl_VERSION_PATCH@
+  character(*), parameter :: CBSL_VERSTION_STRING = '@cbsl_VERSION@'
+  integer(4),   parameter :: CBSL_MAJOR_VERSION   = @cbsl_VERSION_MAJOR@
+  integer(4),   parameter :: CBSL_MINOR_VERSION   = @cbsl_VERSION_MINOR@
+  integer(4),   parameter :: CBSL_PATCH_VERSION   = @cbsl_VERSION_PATCH@
+
+  integer(4), parameter :: cbslf_load_mode    = 1
+  integer(4), parameter :: cbslf_store_mode   = 2
+  integer(4), parameter :: cbslf_unknown_mode = -1
+
+  integer(4), parameter :: cbslf_success = 0
+  integer(4), parameter :: cbslf_error   = -1
+
+  ! C function interfaces
+  interface
+    function cbsl_open(open_mode, path) result(ctx) &
+        bind(C,name='cbsl_open')
+      use, intrinsic :: iso_c_binding
+      integer(c_int),value,  intent(in) :: open_mode
+      character(kind=c_char),intent(in) :: path(*)
+      integer(c_intptr_t) :: ctx
+    end function
+
+    function cbsl_close(ctx) result(retcode) &
+        bind(C,name='cbsl_close')
+      use, intrinsic :: iso_c_binding
+      integer(c_intptr_t),value,intent(in) :: ctx
+      integer(c_int) :: retcode
+    end function
+
+    function cbsl_flush(ctx) result(retcode) &
+        bind(C,name='cbsl_flush')
+      use, intrinsic :: iso_c_binding
+      integer(c_intptr_t),value,intent(in) :: ctx
+      integer(c_int) :: retcode
+    end function
+
+    function cbsl_get_mode(ctx) result(retcode) &
+        bind(C,name='cbsl_get_mode')
+      use, intrinsic :: iso_c_binding
+      integer(c_intptr_t),value,intent(in) :: ctx
+      integer(c_int) :: retcode
+    end function
+
+    function cbsl_write(ctx, pdata, psize) result(retcode) &
+        bind(C,name='cbsl_write')
+      use, intrinsic :: iso_c_binding
+      integer(c_intptr_t),value,intent(in) :: ctx
+      integer(c_intptr_t),value,intent(in) :: pdata
+      integer(c_int64_t),value,intent(in)  :: psize
+      integer(c_int) :: retcode
+    end function
+
+    function cbsl_read(ctx, pdata, psize) result(retcode) &
+        bind(C,name='cbsl_read')
+      use, intrinsic :: iso_c_binding
+      integer(c_intptr_t),value,intent(in) :: ctx
+      integer(c_intptr_t),value,intent(in) :: pdata
+      integer(c_int64_t),value,intent(in)  :: psize
+      integer(c_int) :: retcode
+    end function
+
+    function cbsl_record(ctx, pdata, psize) result(retcode) &
+        bind(C,name='cbsl_record')
+      use, intrinsic :: iso_c_binding
+      integer(c_intptr_t),value,intent(in) :: ctx
+      integer(c_intptr_t),value,intent(in) :: pdata
+      integer(c_int64_t),value,intent(in)  :: psize
+      integer(c_int) :: retcode
+    end function
+
+    ! cbsl_record_heap() not binds because the function uses malloc()
+
+    function cbsl_set_compression_level(ctx,clevel) result(retcode) &
+        bind(C,name='cbsl_set_compression_level')
+      use, intrinsic :: iso_c_binding
+      integer(c_intptr_t),value,intent(in) :: ctx
+      integer(c_int),value,intent(in) :: clevel
+      integer(c_int) :: retcode
+    end function
+
+    function cbsl_get_compression_level(ctx) result(clevel) &
+        bind(C,name='cbsl_get_compression_level')
+      use, intrinsic :: iso_c_binding
+      integer(c_intptr_t),value,intent(in) :: ctx
+      integer(c_int) :: clevel
+    end function
+  end interface
+
+  ! Generic routines
+  interface cbslf_write
+    DECLARE_SCALAR_INTERFACE(write,character)
+    DECLARE_SCALAR_INTERFACE(write,logical)
+
+    DECLARE_ARRAY_INTERFACE(write,integer4)
+    DECLARE_ARRAY_INTERFACE(write,integer8)
+    DECLARE_ARRAY_INTERFACE(write,sreal)
+    DECLARE_ARRAY_INTERFACE(write,dreal)
+    DECLARE_ARRAY_INTERFACE(write,ccomplex)
+    DECLARE_ARRAY_INTERFACE(write,zcomplex)
+  end interface
+
+  interface cbslf_read
+    DECLARE_SCALAR_INTERFACE(read,character)
+    DECLARE_SCALAR_INTERFACE(read,logical)
+
+    DECLARE_ARRAY_INTERFACE(read,integer4)
+    DECLARE_ARRAY_INTERFACE(read,integer8)
+    DECLARE_ARRAY_INTERFACE(read,sreal)
+    DECLARE_ARRAY_INTERFACE(read,dreal)
+    DECLARE_ARRAY_INTERFACE(read,ccomplex)
+    DECLARE_ARRAY_INTERFACE(read,zcomplex)
+  end interface
+
+  interface cbslf_record
+    DECLARE_SCALAR_INTERFACE(record,character)
+    DECLARE_SCALAR_INTERFACE(record,logical)
+
+    DECLARE_ARRAY_INTERFACE(record,integer4)
+    DECLARE_ARRAY_INTERFACE(record,integer8)
+    DECLARE_ARRAY_INTERFACE(record,sreal)
+    DECLARE_ARRAY_INTERFACE(record,dreal)
+    DECLARE_ARRAY_INTERFACE(record,ccomplex)
+    DECLARE_ARRAY_INTERFACE(record,zcomplex)
+  end interface
+
+  interface cbslf_record_heap
+    DECLARE_ARRAY_INTERFACE_ALLOCATABLE(record,integer4)
+    DECLARE_ARRAY_INTERFACE_ALLOCATABLE(record,integer8)
+    DECLARE_ARRAY_INTERFACE_ALLOCATABLE(record,sreal)
+    DECLARE_ARRAY_INTERFACE_ALLOCATABLE(record,dreal)
+    DECLARE_ARRAY_INTERFACE_ALLOCATABLE(record,ccomplex)
+    DECLARE_ARRAY_INTERFACE_ALLOCATABLE(record,zcomplex)
+  end interface
+
+contains
+  IMPLEMENT_SCALAR_INTERFACE(character,character(*,kind=c_char))
+  IMPLEMENT_SCALAR_INTERFACE(logical,logical(c_bool))
+
+  IMPLEMENT_ARRAY_INTERFACE(integer4,integer(c_int32_t))
+  IMPLEMENT_ARRAY_INTERFACE(integer8,integer(c_int64_t))
+  IMPLEMENT_ARRAY_INTERFACE(sreal,real(c_float))
+  IMPLEMENT_ARRAY_INTERFACE(dreal,real(c_double))
+  IMPLEMENT_ARRAY_INTERFACE(ccomplex,complex(c_float_complex))
+  IMPLEMENT_ARRAY_INTERFACE(zcomplex,complex(c_double_complex))
+
+  function cbslf_open(open_mode, path, errcode) result(ctx)
+    implicit none
+    integer(4),   intent(in)            :: open_mode
+    character(*), intent(in)            :: path
+    integer(4),   intent(out), optional :: errcode
+    type(cbslf_context) :: ctx
+    character(1,c_char)  :: cpath(len_trim(path)+1)
+    integer(4) :: n,i
+    n = len_trim(path, kind=4)
+    do i=1,n
+      cpath(i) = path(i:i)
+    end do
+    cpath(n+1) = c_null_char
+    ctx%ctx = cbsl_open(open_mode, cpath)
+    SET_ERRCODE_COND(ctx%ctx /= 0) ! is not null pointer
+  end function
+
+  subroutine cbslf_close(ctx, errcode)
+    implicit none
+    type(cbslf_context), intent(in)            :: ctx
+    integer(4),          intent(out), optional :: errcode
+    integer(4) :: ret
+    ret = cbsl_close(ctx%ctx)
+    SET_ERRCODE(ret)
+  end subroutine
+
+  subroutine cbslf_flush(ctx, errcode)
+    implicit none
+    type(cbslf_context), intent(in)            :: ctx
+    integer(4),          intent(out), optional :: errcode
+    integer(4) :: ret
+    ret = cbsl_flush(ctx%ctx)
+    SET_ERRCODE(ret)
+  end subroutine
+
+  function cbslf_get_mode(ctx, errcode) result(open_mode)
+    implicit none
+    type(cbslf_context), intent(in)            :: ctx
+    integer(4),          intent(out), optional :: errcode
+    integer(4) :: open_mode
+    open_mode = cbsl_get_mode(ctx%ctx)
+    SET_ERRCODE_COND(open_mode == cbslf_unknown_mode)
+  end function
+
+  subroutine cbslf_set_compression_level(ctx, clevel, errcode)
+    implicit none
+    type(cbslf_context), intent(in)            :: ctx
+    integer(4),          intent(in)            :: clevel
+    integer(4),          intent(out), optional :: errcode
+    integer(4) :: ret
+    ret = cbsl_set_compression_level(ctx%ctx, clevel)
+    SET_ERRCODE(ret)
+  end subroutine
+
+  function cbslf_get_compression_level(ctx, errcode) result(clevel)
+    implicit none
+    type(cbslf_context), intent(in)            :: ctx
+    integer(4),          intent(out), optional :: errcode
+    integer(4) :: clevel
+    clevel = cbsl_get_compression_level(ctx%ctx)
+    SET_ERRCODE_COND(clevel > 0)
+  end function
+end module
