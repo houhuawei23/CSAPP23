@@ -763,3 +763,481 @@ Victim cache hit!
 [SimTrace] +-----------------------------------------------------+
 [main] Cache模拟失败
 
+
+Cache_direct_map_l16
+[main] Cache模拟器框架 v3.0 by mars, 2022
+[main] 初始化存储器，读入Trace文件[./traces/gedit.trace.zst]，请稍后...
+[parse_TRACE_file] +-----------------------------------------------------+
+[parse_TRACE_file] |  Memory Trace数量                 	 :   45326334    |
+[parse_TRACE_file] |    Instruction操作数量            	 :   25126783    |
+[parse_TRACE_file] |    Data Load操作数量              	 :   14776439    |
+[parse_TRACE_file] |    Data Store操作数量             	 :    5299553    |
+[parse_TRACE_file] |    Data Modify操作数量            	 :     123559    |
+[parse_TRACE_file] | 时间耗费（ms）                    	 :      15367    |
+[parse_TRACE_file] +-----------------------------------------------------+
+[main] 处理Trace文件完毕
+[InitDataCache] +-----------------------------------+
+[InitDataCache] |   hhw的Data Cache初始化ing.... |
+[InitDataCache] +-----------------------------------+
+[main] 开始Cache模拟，请稍后...
+[SimTrace] +-----------------------------------------------------+
+[SimTrace] |  Memory Trace数量                	 :   45326334    |
+[SimTrace] |    Instruction操作数量           	 :   25126783    |
+[SimTrace] |    Data Load操作数量             	 :   14776439    |
+[SimTrace] |    Data Store操作数量            	 :    5299553    |
+[SimTrace] |    Data Modify操作数量           	 :     123559    |
+[SimTrace] |    Instruction操作Cache命中数量  	 :          0    |
+[SimTrace] |    Data Load操作Cache命中数量    	 :   11946639    |
+[SimTrace] |    Data Store操作Cache命中数量   	 :    5108655    |
+[SimTrace] |    Data Modify操作Cache命中数量  	 :     115529    |
+[SimTrace] |  Cache访存数量                   	 :   12112864    |
+[SimTrace] |    Cache读存储器数量             	 :    6057456    |
+[SimTrace] |    Cache写存储器数量             	 :    6055408    |
+[SimTrace] |  Data Cache命中率                	 :     85.01%    |
+[SimTrace] |  Inst Cache命中率                	 :      0.00%    |
+[SimTrace] |  时间耗费（ms）                  	 :        793    |
+[SimTrace] +-----------------------------------------------------+
+[main] Cache模拟成功完成
+
+
+Cache_Instruction
+[main] Cache模拟器框架 v3.0 by mars, 2022
+[main] 初始化存储器，读入Trace文件[./traces/gedit.trace.zst]，请稍后...
+[parse_TRACE_file] +-----------------------------------------------------+
+[parse_TRACE_file] |  Memory Trace数量                 	 :   45326334    |
+[parse_TRACE_file] |    Instruction操作数量            	 :   25126783    |
+[parse_TRACE_file] |    Data Load操作数量              	 :   14776439    |
+[parse_TRACE_file] |    Data Store操作数量             	 :    5299553    |
+[parse_TRACE_file] |    Data Modify操作数量            	 :     123559    |
+[parse_TRACE_file] | 时间耗费（ms）                    	 :      16057    |
+[parse_TRACE_file] +-----------------------------------------------------+
+[main] 处理Trace文件完毕
+[InitDataCache] +-----------------------------------+
+[InitDataCache] |   hhw 的Data Cache初始化ing.... |
+[InitDataCache] +-----------------------------------+
+[main] 开始Cache模拟，请稍后...
+[SimTrace] +-----------------------------------------------------+
+[SimTrace] |  Memory Trace数量                	 :   45326334    |
+[SimTrace] |    Instruction操作数量           	 :   25126783    |
+[SimTrace] |    Data Load操作数量             	 :   14776439    |
+[SimTrace] |    Data Store操作数量            	 :    5299553    |
+[SimTrace] |    Data Modify操作数量           	 :     123559    |
+[SimTrace] |    Instruction操作Cache命中数量  	 :          0    |
+[SimTrace] |    Data Load操作Cache命中数量    	 :   11946639    |
+[SimTrace] |    Data Store操作Cache命中数量   	 :    5108655    |
+[SimTrace] |    Data Modify操作Cache命中数量  	 :     115529    |
+[SimTrace] |  Cache访存数量                   	 :   12112864    |
+[SimTrace] |    Cache读存储器数量             	 :    6057456    |
+[SimTrace] |    Cache写存储器数量             	 :    6055408    |
+[SimTrace] |  Data Cache命中率                	 :     85.01%    |
+[SimTrace] |  Inst Cache命中率                	 :      0.00%    |
+[SimTrace] |  时间耗费（ms）                  	 :        831    |
+[SimTrace] +-----------------------------------------------------+
+[main] Cache模拟成功完成
+
+
+Cache_Instruction
+[main] Cache模拟器框架 v3.0 by mars, 2022
+[main] 初始化存储器，读入Trace文件[./traces/gedit.trace.zst]，请稍后...
+[parse_TRACE_file] +-----------------------------------------------------+
+[parse_TRACE_file] |  Memory Trace数量                 	 :   45326334    |
+[parse_TRACE_file] |    Instruction操作数量            	 :   25126783    |
+[parse_TRACE_file] |    Data Load操作数量              	 :   14776439    |
+[parse_TRACE_file] |    Data Store操作数量             	 :    5299553    |
+[parse_TRACE_file] |    Data Modify操作数量            	 :     123559    |
+[parse_TRACE_file] | 时间耗费（ms）                    	 :      15933    |
+[parse_TRACE_file] +-----------------------------------------------------+
+[main] 处理Trace文件完毕
+[InitDataCache] +-----------------------------------+
+[InitDataCache] |   hhw 的Data Cache初始化ing.... |
+[InitDataCache] +-----------------------------------+
+[InitInstCache] +-----------------------------------+
+[InitInstCache] | hhw 的 Instrction Cache 初始化ing..|
+[InitInstCache] +-----------------------------------+
+[main] 开始Cache模拟，请稍后...
+[SimTrace] +-----------------------------------------------------+
+[SimTrace] |  Memory Trace数量                	 :   45326334    |
+[SimTrace] |    Instruction操作数量           	 :   25126783    |
+[SimTrace] |    Data Load操作数量             	 :   14776439    |
+[SimTrace] |    Data Store操作数量            	 :    5299553    |
+[SimTrace] |    Data Modify操作数量           	 :     123559    |
+[SimTrace] |    Instruction操作Cache命中数量  	 :   24552212    |
+[SimTrace] |    Data Load操作Cache命中数量    	 :   11946639    |
+[SimTrace] |    Data Store操作Cache命中数量   	 :    5108655    |
+[SimTrace] |    Data Modify操作Cache命中数量  	 :     115529    |
+[SimTrace] |  Cache访存数量                   	 :   13262006    |
+[SimTrace] |    Cache读存储器数量             	 :    7206598    |
+[SimTrace] |    Cache写存储器数量             	 :    6055408    |
+[SimTrace] |  Data Cache命中率                	 :     85.01%    |
+[SimTrace] |  Inst Cache命中率                	 :     97.71%    |
+[SimTrace] |  时间耗费（ms）                  	 :       1337    |
+[SimTrace] +-----------------------------------------------------+
+[main] Cache模拟成功完成
+
+
+Cache_L2
+[main] Cache模拟器框架 v3.0 by mars, 2022
+[main] 初始化存储器，读入Trace文件[./traces/gedit.trace.zst]，请稍后...
+[parse_TRACE_file] +-----------------------------------------------------+
+[parse_TRACE_file] |  Memory Trace数量                 	 :   45326334    |
+[parse_TRACE_file] |    Instruction操作数量            	 :   25126783    |
+[parse_TRACE_file] |    Data Load操作数量              	 :   14776439    |
+[parse_TRACE_file] |    Data Store操作数量             	 :    5299553    |
+[parse_TRACE_file] |    Data Modify操作数量            	 :     123559    |
+[parse_TRACE_file] | 时间耗费（ms）                    	 :      16151    |
+[parse_TRACE_file] +-----------------------------------------------------+
+[main] 处理Trace文件完毕
+[InitDataCache] +-----------------------------------+
+[InitDataCache] |   hhw 的Data Cache初始化ing.... |
+[InitDataCache] +-----------------------------------+
+[InitInstCache] +-----------------------------------+
+[InitInstCache] | hhw 的 Instrction Cache 初始化ing..|
+[InitInstCache] +-----------------------------------+
+[main] 开始Cache模拟，请稍后...
+[SimTrace] +-----------------------------------------------------+
+[SimTrace] |  Memory Trace数量                	 :   45326334    |
+[SimTrace] |    Instruction操作数量           	 :   25126783    |
+[SimTrace] |    Data Load操作数量             	 :   14776439    |
+[SimTrace] |    Data Store操作数量            	 :    5299553    |
+[SimTrace] |    Data Modify操作数量           	 :     123559    |
+[SimTrace] |    Instruction操作Cache命中数量  	 :   24673339    |
+[SimTrace] |    Data Load操作Cache命中数量    	 :   11890885    |
+[SimTrace] |    Data Store操作Cache命中数量   	 :    5153862    |
+[SimTrace] |    Data Modify操作Cache命中数量  	 :     114907    |
+[SimTrace] |  Cache访存数量                   	 :   52263856    |
+[SimTrace] |    Cache读存储器数量             	 :   27946728    |
+[SimTrace] |    Cache写存储器数量             	 :   24317128    |
+[SimTrace] |  Data Cache命中率                	 :     84.95%    |
+[SimTrace] |  Inst Cache命中率                	 :     98.20%    |
+[SimTrace] |  时间耗费（ms）                  	 :       2233    |
+[SimTrace] +-----------------------------------------------------+
+[main] Cache模拟成功完成
+
+
+Cache_L2
+[main] Cache模拟器框架 v3.0 by mars, 2022
+[main] 初始化存储器，读入Trace文件[./traces/long.trace.zst]，请稍后...
+[parse_TRACE_file] +-----------------------------------------------------+
+[parse_TRACE_file] |  Memory Trace数量                 	 :     267988    |
+[parse_TRACE_file] |    Instruction操作数量            	 :          0    |
+[parse_TRACE_file] |    Data Load操作数量              	 :     230025    |
+[parse_TRACE_file] |    Data Store操作数量             	 :      18987    |
+[parse_TRACE_file] |    Data Modify操作数量            	 :      18976    |
+[parse_TRACE_file] | 时间耗费（ms）                    	 :         63    |
+[parse_TRACE_file] +-----------------------------------------------------+
+[main] 处理Trace文件完毕
+[InitDataCache] +-----------------------------------+
+[InitDataCache] |   hhw 的Data Cache初始化ing.... |
+[InitDataCache] +-----------------------------------+
+[InitInstCache] +-----------------------------------+
+[InitInstCache] | hhw 的 Instrction Cache 初始化ing..|
+[InitInstCache] +-----------------------------------+
+[main] 开始Cache模拟，请稍后...
+[SimTrace] +-----------------------------------------------------+
+[SimTrace] |  Memory Trace数量                	 :     267988    |
+[SimTrace] |    Instruction操作数量           	 :          0    |
+[SimTrace] |    Data Load操作数量             	 :     230025    |
+[SimTrace] |    Data Store操作数量            	 :      18987    |
+[SimTrace] |    Data Modify操作数量           	 :      18976    |
+[SimTrace] |    Instruction操作Cache命中数量  	 :          0    |
+[SimTrace] |    Data Load操作Cache命中数量    	 :     228593    |
+[SimTrace] |    Data Store操作Cache命中数量   	 :      14652    |
+[SimTrace] |    Data Modify操作Cache命中数量  	 :      18853    |
+[SimTrace] |  Cache访存数量                   	 :      92192    |
+[SimTrace] |    Cache读存储器数量             	 :      47120    |
+[SimTrace] |    Cache写存储器数量             	 :      45072    |
+[SimTrace] |  Data Cache命中率                	 :     97.80%    |
+[SimTrace] |  Inst Cache命中率                	 :      0.00%    |
+[SimTrace] |  时间耗费（ms）                  	 :          5    |
+[SimTrace] +-----------------------------------------------------+
+[main] Cache模拟成功完成
+
+
+Cache_L2
+[main] Cache模拟器框架 v3.0 by mars, 2022
+[main] 初始化存储器，读入Trace文件[./traces/long.trace.zst]，请稍后...
+[parse_TRACE_file] +-----------------------------------------------------+
+[parse_TRACE_file] |  Memory Trace数量                 	 :     267988    |
+[parse_TRACE_file] |    Instruction操作数量            	 :          0    |
+[parse_TRACE_file] |    Data Load操作数量              	 :     230025    |
+[parse_TRACE_file] |    Data Store操作数量             	 :      18987    |
+[parse_TRACE_file] |    Data Modify操作数量            	 :      18976    |
+[parse_TRACE_file] | 时间耗费（ms）                    	 :         60    |
+[parse_TRACE_file] +-----------------------------------------------------+
+[main] 处理Trace文件完毕
+[InitDataCache] +-----------------------------------+
+[InitDataCache] |   hhw 的Data Cache初始化ing.... |
+[InitDataCache] +-----------------------------------+
+[InitInstCache] +-----------------------------------+
+[InitInstCache] | hhw 的 Instrction Cache 初始化ing..|
+[InitInstCache] +-----------------------------------+
+[main] 开始Cache模拟，请稍后...
+[SimTrace] +-----------------------------------------------------+
+[SimTrace] |  Memory Trace数量                	 :     267988    |
+[SimTrace] |    Instruction操作数量           	 :          0    |
+[SimTrace] |    Data Load操作数量             	 :     230025    |
+[SimTrace] |    Data Store操作数量            	 :      18987    |
+[SimTrace] |    Data Modify操作数量           	 :      18976    |
+[SimTrace] |    Instruction操作Cache命中数量  	 :          0    |
+[SimTrace] |    Data Load操作Cache命中数量    	 :     228593    |
+[SimTrace] |    Data Store操作Cache命中数量   	 :      14652    |
+[SimTrace] |    Data Modify操作Cache命中数量  	 :      18853    |
+[SimTrace] |  Cache访存数量                   	 :      92192    |
+[SimTrace] |    Cache读存储器数量             	 :      47120    |
+[SimTrace] |    Cache写存储器数量             	 :      45072    |
+[SimTrace] |  Data Cache命中率                	 :     97.80%    |
+[SimTrace] |  Inst Cache命中率                	 :      0.00%    |
+[SimTrace] |  时间耗费（ms）                  	 :          5    |
+[SimTrace] +-----------------------------------------------------+
+[main] Cache模拟成功完成
+
+
+Cache_L2
+[main] Cache模拟器框架 v3.0 by mars, 2022
+[main] 初始化存储器，读入Trace文件[./traces/long.trace.zst]，请稍后...
+[parse_TRACE_file] +-----------------------------------------------------+
+[parse_TRACE_file] |  Memory Trace数量                 	 :     267988    |
+[parse_TRACE_file] |    Instruction操作数量            	 :          0    |
+[parse_TRACE_file] |    Data Load操作数量              	 :     230025    |
+[parse_TRACE_file] |    Data Store操作数量             	 :      18987    |
+[parse_TRACE_file] |    Data Modify操作数量            	 :      18976    |
+[parse_TRACE_file] | 时间耗费（ms）                    	 :         60    |
+[parse_TRACE_file] +-----------------------------------------------------+
+[main] 处理Trace文件完毕
+[InitDataCache] +-----------------------------------+
+[InitDataCache] |   hhw 的Data Cache初始化ing.... |
+[InitDataCache] +-----------------------------------+
+[InitInstCache] +-----------------------------------+
+[InitInstCache] | hhw 的 Instrction Cache 初始化ing..|
+[InitInstCache] +-----------------------------------+
+[InitL2Cache] +-----------------------------------+
+[InitL2Cache] |      hhw 的 L2 Cache 初始化ing..  |
+[InitL2Cache] +-----------------------------------+
+[main] 开始Cache模拟，请稍后...
+[SimTrace] +-----------------------------------------------------+
+[SimTrace] |  Memory Trace数量                	 :     267988    |
+[SimTrace] |    Instruction操作数量           	 :          0    |
+[SimTrace] |    Data Load操作数量             	 :     230025    |
+[SimTrace] |    Data Store操作数量            	 :      18987    |
+[SimTrace] |    Data Modify操作数量           	 :      18976    |
+[SimTrace] |    Instruction操作Cache命中数量  	 :          0    |
+[SimTrace] |    Data Load操作Cache命中数量    	 :     228593    |
+[SimTrace] |    Data Store操作Cache命中数量   	 :      14652    |
+[SimTrace] |    Data Modify操作Cache命中数量  	 :      18853    |
+[SimTrace] |  Cache访存数量                   	 :      92192    |
+[SimTrace] |    Cache读存储器数量             	 :      47120    |
+[SimTrace] |    Cache写存储器数量             	 :      45072    |
+[SimTrace] |  Data Cache命中率                	 :     97.80%    |
+[SimTrace] |  Inst Cache命中率                	 :      0.00%    |
+[SimTrace] |  时间耗费（ms）                  	 :          5    |
+[SimTrace] +-----------------------------------------------------+
+[main] Cache模拟成功完成
+
+
+Cache_L2
+[main] Cache模拟器框架 v3.0 by mars, 2022
+[main] 初始化存储器，读入Trace文件[./traces/long.trace.zst]，请稍后...
+[parse_TRACE_file] +-----------------------------------------------------+
+[parse_TRACE_file] |  Memory Trace数量                 	 :     267988    |
+[parse_TRACE_file] |    Instruction操作数量            	 :          0    |
+[parse_TRACE_file] |    Data Load操作数量              	 :     230025    |
+[parse_TRACE_file] |    Data Store操作数量             	 :      18987    |
+[parse_TRACE_file] |    Data Modify操作数量            	 :      18976    |
+[parse_TRACE_file] | 时间耗费（ms）                    	 :         68    |
+[parse_TRACE_file] +-----------------------------------------------------+
+[main] 处理Trace文件完毕
+[InitDataCache] +-----------------------------------+
+[InitDataCache] |   hhw 的Data Cache初始化ing.... |
+[InitDataCache] +-----------------------------------+
+[InitInstCache] +-----------------------------------+
+[InitInstCache] | hhw 的 Instrction Cache 初始化ing..|
+[InitInstCache] +-----------------------------------+
+[InitL2Cache] +-----------------------------------+
+[InitL2Cache] |      hhw 的 L2 Cache 初始化ing..  |
+[InitL2Cache] +-----------------------------------+
+[main] 开始Cache模拟，请稍后...
+[SimTrace] +-----------------------------------------------------+
+[SimTrace] |  Memory Trace数量                	 :     267988    |
+[SimTrace] |    Instruction操作数量           	 :          0    |
+[SimTrace] |    Data Load操作数量             	 :     230025    |
+[SimTrace] |    Data Store操作数量            	 :      18987    |
+[SimTrace] |    Data Modify操作数量           	 :      18976    |
+[SimTrace] |    Instruction操作Cache命中数量  	 :          0    |
+[SimTrace] |    Data Load操作Cache命中数量    	 :     228593    |
+[SimTrace] |    Data Store操作Cache命中数量   	 :      14652    |
+[SimTrace] |    Data Modify操作Cache命中数量  	 :      18853    |
+[SimTrace] |  Cache访存数量                   	 :      92192    |
+[SimTrace] |    Cache读存储器数量             	 :      47120    |
+[SimTrace] |    Cache写存储器数量             	 :      45072    |
+[SimTrace] |  Data Cache命中率                	 :     97.80%    |
+[SimTrace] |  Inst Cache命中率                	 :      0.00%    |
+[SimTrace] |  时间耗费（ms）                  	 :          6    |
+[SimTrace] +-----------------------------------------------------+
+[main] Cache模拟成功完成
+
+
+Cache_L2
+[main] Cache模拟器框架 v3.0 by mars, 2022
+[main] 初始化存储器，读入Trace文件[./traces/long.trace.zst]，请稍后...
+[parse_TRACE_file] +-----------------------------------------------------+
+[parse_TRACE_file] |  Memory Trace数量                 	 :     267988    |
+[parse_TRACE_file] |    Instruction操作数量            	 :          0    |
+[parse_TRACE_file] |    Data Load操作数量              	 :     230025    |
+[parse_TRACE_file] |    Data Store操作数量             	 :      18987    |
+[parse_TRACE_file] |    Data Modify操作数量            	 :      18976    |
+[parse_TRACE_file] | 时间耗费（ms）                    	 :         62    |
+[parse_TRACE_file] +-----------------------------------------------------+
+[main] 处理Trace文件完毕
+[InitDataCache] +-----------------------------------+
+[InitDataCache] |   hhw 的Data Cache初始化ing.... |
+[InitDataCache] +-----------------------------------+
+[InitInstCache] +-----------------------------------+
+[InitInstCache] | hhw 的 Instrction Cache 初始化ing..|
+[InitInstCache] +-----------------------------------+
+[InitL2Cache] +-----------------------------------+
+[InitL2Cache] |      hhw 的 L2 Cache 初始化ing..  |
+[InitL2Cache] +-----------------------------------+
+[main] 开始Cache模拟，请稍后...
+[SimTrace] +-----------------------------------------------------+
+[SimTrace] |  Memory Trace数量                	 :     267988    |
+[SimTrace] |    Instruction操作数量           	 :          0    |
+[SimTrace] |    Data Load操作数量             	 :     230025    |
+[SimTrace] |    Data Store操作数量            	 :      18987    |
+[SimTrace] |    Data Modify操作数量           	 :      18976    |
+[SimTrace] |    Instruction操作Cache命中数量  	 :          0    |
+[SimTrace] |    Data Load操作Cache命中数量    	 :     228593    |
+[SimTrace] |    Data Store操作Cache命中数量   	 :      14652    |
+[SimTrace] |    Data Modify操作Cache命中数量  	 :      18853    |
+[SimTrace] |  Cache访存数量                   	 :      92192    |
+[SimTrace] |    Cache读存储器数量             	 :      47120    |
+[SimTrace] |    Cache写存储器数量             	 :      45072    |
+[SimTrace] |  Data Cache命中率                	 :     97.80%    |
+[SimTrace] |  Inst Cache命中率                	 :      0.00%    |
+[SimTrace] |  时间耗费（ms）                  	 :          5    |
+[SimTrace] +-----------------------------------------------------+
+[main] Cache模拟成功完成
+
+
+Cache_L2
+[main] Cache模拟器框架 v3.0 by mars, 2022
+[main] 初始化存储器，读入Trace文件[./traces/long.trace.zst]，请稍后...
+[parse_TRACE_file] +-----------------------------------------------------+
+[parse_TRACE_file] |  Memory Trace数量                 	 :     267988    |
+[parse_TRACE_file] |    Instruction操作数量            	 :          0    |
+[parse_TRACE_file] |    Data Load操作数量              	 :     230025    |
+[parse_TRACE_file] |    Data Store操作数量             	 :      18987    |
+[parse_TRACE_file] |    Data Modify操作数量            	 :      18976    |
+[parse_TRACE_file] | 时间耗费（ms）                    	 :         65    |
+[parse_TRACE_file] +-----------------------------------------------------+
+[main] 处理Trace文件完毕
+[InitDataCache] +-----------------------------------+
+[InitDataCache] |   hhw 的Data Cache初始化ing.... |
+[InitDataCache] +-----------------------------------+
+[InitInstCache] +-----------------------------------+
+[InitInstCache] | hhw 的 Instrction Cache 初始化ing..|
+[InitInstCache] +-----------------------------------+
+[InitL2Cache] +-----------------------------------+
+[InitL2Cache] |      hhw 的 L2 Cache 初始化ing..  |
+[InitL2Cache] +-----------------------------------+
+[main] 开始Cache模拟，请稍后...
+[SimTrace] 关键错误！数据Cache读错误，内存地址=0000000000602260 内存数据=00000000D6651C2C Cache读数据=0000000000000000 大小4字节
+[SimTrace] +-----------------------------------------------------+
+[SimTrace] |  Memory Trace数量                	 :     267988    |
+[SimTrace] |    Instruction操作数量           	 :          0    |
+[SimTrace] |    Data Load操作数量             	 :          1    |
+[SimTrace] |    Data Store操作数量            	 :          1    |
+[SimTrace] |    Data Modify操作数量           	 :          0    |
+[SimTrace] |    Instruction操作Cache命中数量  	 :          0    |
+[SimTrace] |    Data Load操作Cache命中数量    	 :          0    |
+[SimTrace] |    Data Store操作Cache命中数量   	 :          0    |
+[SimTrace] |    Data Modify操作Cache命中数量  	 :          0    |
+[SimTrace] |  Cache访存数量                   	 :          8    |
+[SimTrace] |    Cache读存储器数量             	 :          8    |
+[SimTrace] |    Cache写存储器数量             	 :          0    |
+[SimTrace] |  Data Cache命中率                	 :      0.00%    |
+[SimTrace] |  Inst Cache命中率                	 :      0.00%    |
+[SimTrace] |  时间耗费（ms）                  	 :          0    |
+[SimTrace] +-----------------------------------------------------+
+[main] Cache模拟失败
+
+
+Cache_Instruction
+
+
+Cache_Instruction
+[main] Cache模拟器框架 v3.0 by mars, 2022
+[main] 初始化存储器，读入Trace文件[./traces/long.trace.zst]，请稍后...
+[parse_TRACE_file] +-----------------------------------------------------+
+[parse_TRACE_file] |  Memory Trace数量                 	 :     267988    |
+[parse_TRACE_file] |    Instruction操作数量            	 :          0    |
+[parse_TRACE_file] |    Data Load操作数量              	 :     230025    |
+[parse_TRACE_file] |    Data Store操作数量             	 :      18987    |
+[parse_TRACE_file] |    Data Modify操作数量            	 :      18976    |
+[parse_TRACE_file] | 时间耗费（ms）                    	 :         67    |
+[parse_TRACE_file] +-----------------------------------------------------+
+[main] 处理Trace文件完毕
+[InitDataCache] +-----------------------------------+
+[InitDataCache] |   hhw 的Data Cache初始化ing.... |
+[InitDataCache] +-----------------------------------+
+[InitInstCache] +-----------------------------------+
+[InitInstCache] | hhw 的 Instrction Cache 初始化ing..|
+[InitInstCache] +-----------------------------------+
+[main] 开始Cache模拟，请稍后...
+[SimTrace] +-----------------------------------------------------+
+[SimTrace] |  Memory Trace数量                	 :     267988    |
+[SimTrace] |    Instruction操作数量           	 :          0    |
+[SimTrace] |    Data Load操作数量             	 :     230025    |
+[SimTrace] |    Data Store操作数量            	 :      18987    |
+[SimTrace] |    Data Modify操作数量           	 :      18976    |
+[SimTrace] |    Instruction操作Cache命中数量  	 :          0    |
+[SimTrace] |    Data Load操作Cache命中数量    	 :     225826    |
+[SimTrace] |    Data Store操作Cache命中数量   	 :      14801    |
+[SimTrace] |    Data Modify操作Cache命中数量  	 :      18944    |
+[SimTrace] |  Cache访存数量                   	 :      31620    |
+[SimTrace] |    Cache读存储器数量             	 :      16834    |
+[SimTrace] |    Cache写存储器数量             	 :      14786    |
+[SimTrace] |  Data Cache命中率                	 :     96.86%    |
+[SimTrace] |  Inst Cache命中率                	 :      0.00%    |
+[SimTrace] |  时间耗费（ms）                  	 :          4    |
+[SimTrace] +-----------------------------------------------------+
+[main] Cache模拟成功完成
+
+
+Cache_Instruction
+[main] Cache模拟器框架 v3.0 by mars, 2022
+[main] 初始化存储器，读入Trace文件[./traces/gedit.trace.zst]，请稍后...
+[parse_TRACE_file] +-----------------------------------------------------+
+[parse_TRACE_file] |  Memory Trace数量                 	 :   45326334    |
+[parse_TRACE_file] |    Instruction操作数量            	 :   25126783    |
+[parse_TRACE_file] |    Data Load操作数量              	 :   14776439    |
+[parse_TRACE_file] |    Data Store操作数量             	 :    5299553    |
+[parse_TRACE_file] |    Data Modify操作数量            	 :     123559    |
+[parse_TRACE_file] | 时间耗费（ms）                    	 :      16674    |
+[parse_TRACE_file] +-----------------------------------------------------+
+[main] 处理Trace文件完毕
+[InitDataCache] +-----------------------------------+
+[InitDataCache] |   hhw 的Data Cache初始化ing.... |
+[InitDataCache] +-----------------------------------+
+[InitInstCache] +-----------------------------------+
+[InitInstCache] | hhw 的 Instrction Cache 初始化ing..|
+[InitInstCache] +-----------------------------------+
+[main] 开始Cache模拟，请稍后...
+[SimTrace] +-----------------------------------------------------+
+[SimTrace] |  Memory Trace数量                	 :   45326334    |
+[SimTrace] |    Instruction操作数量           	 :   25126783    |
+[SimTrace] |    Data Load操作数量             	 :   14776439    |
+[SimTrace] |    Data Store操作数量            	 :    5299553    |
+[SimTrace] |    Data Modify操作数量           	 :     123559    |
+[SimTrace] |    Instruction操作Cache命中数量  	 :   24552212    |
+[SimTrace] |    Data Load操作Cache命中数量    	 :   11946639    |
+[SimTrace] |    Data Store操作Cache命中数量   	 :    5108655    |
+[SimTrace] |    Data Modify操作Cache命中数量  	 :     115529    |
+[SimTrace] |  Cache访存数量                   	 :   13262006    |
+[SimTrace] |    Cache读存储器数量             	 :    7206598    |
+[SimTrace] |    Cache写存储器数量             	 :    6055408    |
+[SimTrace] |  Data Cache命中率                	 :     85.01%    |
+[SimTrace] |  Inst Cache命中率                	 :     97.71%    |
+[SimTrace] |  时间耗费（ms）                  	 :       1200    |
+[SimTrace] +-----------------------------------------------------+
+[main] Cache模拟成功完成
+

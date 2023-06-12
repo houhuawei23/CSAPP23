@@ -9,7 +9,7 @@
 #include <time.h>
 #include "getopt.h"
 #include "cbsl.h"
-
+// #define L2_CACHE 1
 #define CBSL_ERROR_CHECK(X)                       \
 	{                                             \
 		if ((X) == cbsl_error)                    \
@@ -799,6 +799,10 @@ int main(int argc, char *argv[])
 	printf("[%s] 处理Trace文件完毕\n", __func__);
 	InitDataCache();
 	InitInstCache();
+	// for L2
+#ifdef L2_CACHE
+	InitL2Cache();
+#endif
 	printf("[%s] 开始Cache模拟，请稍后...\n", __func__);
 	ret_val = SimTrace();
 	if (ret_val != 0)

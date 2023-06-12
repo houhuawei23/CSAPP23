@@ -80,9 +80,9 @@ void InitDataCache()
 	printf("Bytes per line = %d Bytes, %d bits for offset\n", DCACHE_DATA_PER_LINE, DCACHE_DATA_PER_LINE_ADDR_BITS);
 	printf("Cache line = %d\n", DCACHE_LINE);
 	printf("Line per set = %d\n", LINE_PER_SET);
-	printf("Set = %d, %d bits for set index\n", DCACHE_SET, DCACHE_SET_ADDR_BITS);
+	printf("Set = %d, %d bits for set index\n", DCACHE_LINE, DCACHE_SET_ADDR_BITS);
 
-	for (i = 0; i < DCACHE_SET; i++)
+	for (i = 0; i < DCACHE_LINE; i++)
 		DCache[i].Valid = 0;
 }
 
@@ -246,7 +246,7 @@ UINT8 AccessDataCache(UINT64 Address, UINT8 Operation, UINT8 DataSize, UINT64 St
 
 	// 从Address中分离出 AddressTag、GroupIndex、BlockOffset
 	BlockOffset = Address % DCACHE_DATA_PER_LINE;
-	SetIndex = (Address >> DCACHE_DATA_PER_LINE_ADDR_BITS) % DCACHE_SET;
+	SetIndex = (Address >> DCACHE_DATA_PER_LINE_ADDR_BITS) % DCACHE_LINE;
 	AddressTag = Address >> (DCACHE_DATA_PER_LINE_ADDR_BITS + DCACHE_SET_ADDR_BITS);
 	// debug
 	// printf("Address: %b\n", Address);

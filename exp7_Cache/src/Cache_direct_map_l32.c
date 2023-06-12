@@ -60,7 +60,7 @@ struct DCACHE_LineStruct
 	UINT8 Valid;
 	UINT64 Tag;
 	UINT8 Data[DCACHE_DATA_PER_LINE];
-} DCache[DCACHE_SET];
+} DCache[DCACHE_LINE];
 
 /*
 	DCache初始化代码，一般需要把DCache的有效位Valid设置为0
@@ -72,7 +72,7 @@ void InitDataCache()
 	printf("[%s] +-----------------------------------+\n", __func__);
 	printf("[%s] |   hhw的Data Cache初始化ing.... |\n", __func__);
 	printf("[%s] +-----------------------------------+\n", __func__);
-	for (i = 0; i < DCACHE_SET; i++)
+	for (i = 0; i < DCACHE_LINE; i++)
 		DCache[i].Valid = 0;
 }
 
@@ -235,7 +235,7 @@ UINT8 AccessDataCache(UINT64 Address, UINT8 Operation, UINT8 DataSize, UINT64 St
 	 */
 
 	// CacheLineAddress Cache的行号，在直接映射中，就是组号（每组1行）
-	CacheLineAddress = (Address >> DCACHE_DATA_PER_LINE_ADDR_BITS) % DCACHE_SET;
+	CacheLineAddress = (Address >> DCACHE_DATA_PER_LINE_ADDR_BITS) % DCACHE_LINE;
 	BlockOffset = Address % DCACHE_DATA_PER_LINE;
 	// 地址去掉DCACHE_SET、DCACHE_DATA_PER_LINE，剩下的作为Tag。警告！不能将整个地址作为Tag！！
 	AddressTag = (Address >> DCACHE_DATA_PER_LINE_ADDR_BITS) >> DCACHE_SET_ADDR_BITS;

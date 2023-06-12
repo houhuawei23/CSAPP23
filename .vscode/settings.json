@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "x86intrin.h": "c"
+        "x86intrin.h": "c",
+        "new": "cpp"
     }
 }
