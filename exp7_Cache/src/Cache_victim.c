@@ -51,8 +51,8 @@
 #define DCACHE_SIZE 16384													// 16 KB
 #define DCACHE_DATA_PER_LINE 16												// 每行的字节数
 #define DCACHE_DATA_PER_LINE_ADDR_BITS GET_POWER_OF_2(DCACHE_DATA_PER_LINE) // 必须与上面设置一致，即64字节，需要6位地址 (b)
-#define DCACHE_SET (DCACHE_SIZE / DCACHE_DATA_PER_LINE)						// Cache的行数
-#define DCACHE_SET_ADDR_BITS GET_POWER_OF_2(DCACHE_SET)						// 必须与上面设置一致，即256行，需要8位地址  (s)
+#define DCACHE_LINE (DCACHE_SIZE / DCACHE_DATA_PER_LINE)						// Cache的行数
+#define DCACHE_LINE_ADDR_BITS GET_POWER_OF_2(DCACHE_LINE)						// 必须与上面设置一致，即256行，需要8位地址  (s)
 
 #define DCACHE_VICTIM_SIZE 4 // 4行
 // Cache行的结构，包括Valid、Tag和Data。你所有的状态信息，只能记录在Cache行中！
@@ -330,7 +330,7 @@ UINT8 AccessDataCache(UINT64 Address, UINT8 Operation, UINT8 DataSize, UINT64 St
 	CacheLineAddress = (Address >> DCACHE_DATA_PER_LINE_ADDR_BITS) % DCACHE_LINE;
 	BlockOffset = Address % DCACHE_DATA_PER_LINE;
 	// 地址去掉DCACHE_SET、DCACHE_DATA_PER_LINE，剩下的作为Tag。警告！不能将整个地址作为Tag！！
-	AddressTag = (Address >> DCACHE_DATA_PER_LINE_ADDR_BITS) >> DCACHE_SET_ADDR_BITS;
+	AddressTag = (Address >> DCACHE_DATA_PER_LINE_ADDR_BITS) >> DCACHE_LINE_ADDR_BITS;
 
 	if (DCache[CacheLineAddress].Valid == 1 && DCache[CacheLineAddress].Tag == AddressTag)
 	{

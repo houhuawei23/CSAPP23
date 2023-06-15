@@ -1,7 +1,7 @@
 b AccessDataCache
-display/t Address
-display/t BlockOffset
-display/t CacheLineAddress
-display/t AddressTag
-display MissFlag
-display DCache[CacheLineAddress]
+run ./traces/long.trace.zst
+display/x Address
+display/x *LoadResult
+display/x DCache[CacheLineAddress].Valid
+display/x AddressTag 
+display/x DCache[CacheLineAddress].Tag  

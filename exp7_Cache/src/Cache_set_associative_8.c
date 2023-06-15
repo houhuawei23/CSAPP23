@@ -295,7 +295,6 @@ UINT8 AccessDataCache(UINT64 Address, UINT8 Operation, UINT8 DataSize, UINT64 St
 			UINT64 OldAddress;
 			OldAddress = ((DCache[LineAddress].Tag << DCACHE_SET_ADDR_BITS) + SetIndex) << DCACHE_DATA_PER_LINE_ADDR_BITS;
 			StoreDataCacheLineToMemory(OldAddress, LineAddress);
-
 		}
 		LoadDataCacheLineFromMemory(Address, LineAddress);
 		DCache[LineAddress].Valid = 1;

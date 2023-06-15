@@ -48,7 +48,7 @@
 	直接映射Data Cache，16KB大小
 */
 #define DCACHE_SIZE 16384													// 16 KB
-#define DCACHE_DATA_PER_LINE 64												// 每行的字节数
+#define DCACHE_DATA_PER_LINE 16												// 每行的字节数
 #define DCACHE_DATA_PER_LINE_ADDR_BITS GET_POWER_OF_2(DCACHE_DATA_PER_LINE) // 必须与上面设置一致，即64字节，需要6位地址 (b)
 #define DCACHE_LINE (DCACHE_SIZE / DCACHE_DATA_PER_LINE)					// Cache的行数
 #define DCACHE_LINE_ADDR_BITS GET_POWER_OF_2(DCACHE_LINE)					// 必须与上面设置一致，即256行，需要8位地址  (s)
@@ -56,7 +56,7 @@
 	直接映射Instruction Cache，16KB大小
 */
 #define ICACHE_SIZE 16384		// 16 KB
-#define ICACHE_DATA_PER_LINE 64 // 每行的字节数
+#define ICACHE_DATA_PER_LINE 16 // 每行的字节数
 #define ICACHE_DATA_PER_LINE_ADDR_BITS GET_POWER_OF_2(ICACHE_DATA_PER_LINE)
 #define ICACHE_LINE (ICACHE_SIZE / ICACHE_DATA_PER_LINE) // Cache的行数
 #define ICACHE_LINE_ADDR_BITS GET_POWER_OF_2(ICACHE_LINE)
@@ -65,12 +65,12 @@
 	统一L2 Cache，1MB
 */
 #define L2CACHE_SIZE 1048576		// 1 MB
-#define L2CACHE_DATA_PER_LINE 64 // 每行的字节数
+#define L2CACHE_DATA_PER_LINE 16 // 每行的字节数
 #define L2CACHE_DATA_PER_LINE_ADDR_BITS GET_POWER_OF_2(L2CACHE_DATA_PER_LINE)
 #define L2CACHE_LINE (L2CACHE_SIZE / L2CACHE_DATA_PER_LINE) // Cache的行数
 #define L2CACHE_LINE_ADDR_BITS GET_POWER_OF_2(L2CACHE_LINE)
 
-UINT8 AccessL2Cache(UINT64 Address, UINT8 Operation, UINT8 DataSize, UINT64 StoreValue, UINT64 *LoadResult);
+UINT8 AccessL2Cache(UINT64 Address, UINT8 Operation, UINT8 DataSize, UINT64 StoreValue, UINT64* LoadResult);
 
 struct DCACHE_LineStruct
 {
@@ -103,10 +103,10 @@ void LoadDataCacheLineFromMemory(UINT64 Address, UINT32 CacheLineAddress)
 	UINT32 i;
 	UINT64 ReadData;
 	UINT64 AlignAddress;
-	UINT64 *pp;
+	UINT64* pp;
 
 	AlignAddress = Address & ~(DCACHE_DATA_PER_LINE - 1); // 地址必须对齐到DCACHE_DATA_PER_LINE (64)字节边界
-	pp = (UINT64 *)DCache[CacheLineAddress].Data;
+	pp = (UINT64*)DCache[CacheLineAddress].Data;
 	for (i = 0; i < DCACHE_DATA_PER_LINE / 8; i++)
 	{
 		ReadData = ReadMemory(AlignAddress + 8LL * i);
@@ -126,10 +126,10 @@ void StoreDataCacheLineToMemory(UINT64 Address, UINT32 CacheLineAddress)
 	UINT32 i;
 	UINT64 WriteData;
 	UINT64 AlignAddress;
-	UINT64 *pp;
+	UINT64* pp;
 
 	AlignAddress = Address & ~(DCACHE_DATA_PER_LINE - 1); // 地址必须对齐到DCACHE_DATA_PER_LINE (64)字节边界
-	pp = (UINT64 *)DCache[CacheLineAddress].Data;
+	pp = (UINT64*)DCache[CacheLineAddress].Data;
 	WriteData = 0;
 	for (i = 0; i < DCACHE_DATA_PER_LINE / 8; i++)
 	{
@@ -253,6 +253,35 @@ void WriteDataCache(UINT32 LineAddress, UINT8 DataSize, UINT8 BlockOffset, UINT6
 	}
 }
 
+// 如果 DCACHE_DATA_PER_LINE != L2CACHE_DATA_PER_LINE，该如何解决
+
+void load_DCache_from_L2(UINT64 Address, UINT32 DCacheLineAddress) {
+	UINT32 i;
+	UINT64 ReadData;
+	UINT64 L2CacheLineAddress;
+
+	L2CacheLineAddress = (Address >> L2CACHE_DATA_PER_LINE_ADDR_BITS) % L2CACHE_LINE;
+	UINT64* DCacheData_p = (UINT64*)DCache[DCacheLineAddress].Data;
+	UINT64* L2CacheData_p = (UINT64*)L2Cache[L2CacheLineAddress].Data;
+	for (i = 0; i < DCACHE_DATA_PER_LINE / 8; i++)
+	{
+		DCacheData_p[i] = L2CacheData_p[i];
+	}
+}
+
+void store_DCache_to_L2(UINT64 Address, UINT32 DCacheLineAddress) {
+	UINT32 i;
+	UINT64 WriteData;
+	UINT64 L2CacheLineAddress;
+
+	L2CacheLineAddress = (Address >> L2CACHE_DATA_PER_LINE_ADDR_BITS) % L2CACHE_LINE;
+	UINT64* DCacheData_p = (UINT64*)DCache[DCacheLineAddress].Data;
+	UINT64* L2CacheData_p = (UINT64*)L2Cache[L2CacheLineAddress].Data;
+	for (i = 0; i < DCACHE_DATA_PER_LINE / 8; i++)
+	{
+		L2CacheData_p[i] = DCacheData_p[i];
+	}
+}
 /*
 	Data Cache访问接口，系统模拟器会调用此接口，来实现对你的Data Cache访问
 	Address:	访存字节地址
@@ -261,7 +290,7 @@ void WriteDataCache(UINT32 LineAddress, UINT8 DataSize, UINT8 BlockOffset, UINT6
 	StoreValue:	当执行写操作的时候，需要写入的数据
 	LoadResult:	当执行读操作的时候，从Cache读出的数据
 */
-UINT8 AccessDataCache(UINT64 Address, UINT8 Operation, UINT8 DataSize, UINT64 StoreValue, UINT64 *LoadResult)
+UINT8 AccessDataCache(UINT64 Address, UINT8 Operation, UINT8 DataSize, UINT64 StoreValue, UINT64* LoadResult)
 {
 	UINT32 CacheLineAddress;
 	UINT8 BlockOffset;
@@ -275,12 +304,12 @@ UINT8 AccessDataCache(UINT64 Address, UINT8 Operation, UINT8 DataSize, UINT64 St
 	 *	直接映射中，Address被切分为  AddressTag，CacheLineAddress，BlockOffset
 	 */
 
-	// CacheLineAddress Cache的行号，在直接映射中，就是组号（每组1行）
+	 // CacheLineAddress Cache的行号，在直接映射中，就是组号（每组1行）
 	CacheLineAddress = (Address >> DCACHE_DATA_PER_LINE_ADDR_BITS) % DCACHE_LINE;
 	BlockOffset = Address % DCACHE_DATA_PER_LINE;
 	// 地址去掉DCACHE_SET、DCACHE_DATA_PER_LINE，剩下的作为Tag。警告！不能将整个地址作为Tag！！
 	AddressTag = (Address >> DCACHE_DATA_PER_LINE_ADDR_BITS) >> DCACHE_LINE_ADDR_BITS;
-
+	// printf("Address: 0x%016llX, CacheLineAddress: 0x%08X, BlockOffset: 0x%02X, AddressTag: 0x%016llX\n", Address, CacheLineAddress, BlockOffset, AddressTag);
 	if (DCache[CacheLineAddress].Valid == 1 && DCache[CacheLineAddress].Tag == AddressTag)
 	{
 		MissFlag = 'H'; // 命中！
@@ -290,62 +319,45 @@ UINT8 AccessDataCache(UINT64 Address, UINT8 Operation, UINT8 DataSize, UINT64 St
 			ReadValue = ReadDataCache(CacheLineAddress, DataSize, BlockOffset);
 			*LoadResult = ReadValue;
 			if (DEBUG)
-				printf("[%s] Address=%016llX Operation=%c DataSize=%u StoreValue=%016llX ReadValue=%016llX\n", __func__, Address, Operation, DataSize, StoreValue, ReadValue);
+				printf("[%s] Hit Load: Address=%016llX Operation=%c DataSize=%u StoreValue=%016llX ReadValue=%016llX\n", __func__, Address, Operation, DataSize, StoreValue, ReadValue);
 		}
 		else if (Operation == 'S' || Operation == 'M') // 写操作（修改操作在此等价于写操作）
 		{
 			if (DEBUG)
-				printf("[%s] Address=%016llX Operation=%c DataSize=%u StoreValue=%016llX\n", __func__, Address, Operation, DataSize, StoreValue);
+				printf("[%s] Hit S/M: Address=%016llX Operation=%c DataSize=%u StoreValue=%016llX\n", __func__, Address, Operation, DataSize, StoreValue);
 			WriteDataCache(CacheLineAddress, DataSize, BlockOffset, StoreValue);
 		}
 	}
 	else // L1 DataCache不命中
 	{
 		if (DEBUG)
-			printf("[%s] Address=%016llX Operation=%c DataSize=%u StoreValue=%016llX\n", __func__, Address, Operation, DataSize, StoreValue);
+			printf("[%s] Miss: Address=%016llX Operation=%c DataSize=%u Offset=%u StoreValue=%016llX\n", __func__, Address, Operation, DataSize, BlockOffset, StoreValue);
 		MissFlag = AccessL2Cache(Address, Operation, DataSize, StoreValue, LoadResult);
 		// if (MissFlag == 'H')
 		// { // L2 Cache 命中
-		// 无论是否命中，L2对应Cache行已经准备好了
+		// 无论L2是否命中，L2对应Cache行已经准备好了
 		if (DCache[CacheLineAddress].Valid == 1)
 		{ // L1 Cache 行 被占用
 			// 将L1 Cache行的数据写回到L2 Cache
 			UINT64 OldAddress;
-			OldAddress = (DCache[CacheLineAddress].Tag << DCACHE_LINE_ADDR_BITS) + (CacheLineAddress << DCACHE_DATA_PER_LINE_ADDR_BITS);
-			DCache_to_L2(OldAddress, 8, DCache[CacheLineAddress].Data);
+			OldAddress = ((DCache[CacheLineAddress].Tag << DCACHE_LINE_ADDR_BITS) << DCACHE_DATA_PER_LINE_ADDR_BITS) |
+				((UINT64)CacheLineAddress << DCACHE_DATA_PER_LINE_ADDR_BITS);
+			store_DCache_to_L2(OldAddress, CacheLineAddress);
 		}
 		// 将L2 Cache行的数据写入到L1 Cache
 		DCache[CacheLineAddress].Valid = 1;
 		DCache[CacheLineAddress].Tag = AddressTag;
-		WriteDataCache(CacheLineAddress, DataSize, BlockOffset, *LoadResult);
-		// }
-		// else
-		// { // L2 Cache 不命中
-		// 	if (DCache[CacheLineAddress].Valid == 1)
-		// 	{
-		// 		// 将L1 Cache行的数据写回到L2 Cache
-		// 		UINT64 OldAddress;
-		// 		OldAddress = (DCache[CacheLineAddress].Tag << DCACHE_LINE_ADDR_BITS) + (CacheLineAddress << DCACHE_DATA_PER_LINE_ADDR_BITS);
-		// 		DCache_to_L2(OldAddress, 8, DCache[CacheLineAddress].Data);
-		// 	}
-		// 	// 从Memory中读取数据
-		// 	LoadDataCacheLineFromMemory(Address, CacheLineAddress);
-		// 	DCache[CacheLineAddress].Valid = 1;
-		// 	DCache[CacheLineAddress].Tag = AddressTag;
-		// 	if (Operation == 'L') // 读操作
-		// 	{
-		// 		// 读操作不需要做事情，因为已经MISS了
-		// 	}
-		// 	else if (Operation == 'S' || Operation == 'M') // 写操作（修改操作在此等价于写操作）
-		// 	{
-		// 		// 写操作，需要将新的StoreValue更新到CacheLine中
-		// 		WriteDataCache(CacheLineAddress, DataSize, BlockOffset, StoreValue);
-		// 	}
-		// 	// 更新L2 Cache
-		// 	DCache_to_L2(Address, 8, DCache[CacheLineAddress].Data);
-		// }
-	}
+		load_DCache_from_L2(Address, CacheLineAddress);
 
+		if (Operation == 'L') {
+			//
+		}
+		else if (Operation == 'S' || Operation == 'M') {
+			WriteDataCache(CacheLineAddress, DataSize, BlockOffset, StoreValue);
+		}
+
+	}
+	// printf("LoadResult: 0x%016llX\n", *LoadResult);
 	return MissFlag;
 }
 
@@ -371,10 +383,10 @@ void LoadInstCacheLineFromMemory(UINT64 Address, UINT32 CacheLineAddress)
 	UINT32 i;
 	UINT64 ReadData;
 	UINT64 AlignAddress;
-	UINT64 *pp;
+	UINT64* pp;
 
 	AlignAddress = Address & ~(ICACHE_DATA_PER_LINE - 1); // 地址必须对齐到DCACHE_DATA_PER_LINE (64)字节边界
-	pp = (UINT64 *)ICache[CacheLineAddress].Data;
+	pp = (UINT64*)ICache[CacheLineAddress].Data;
 	for (i = 0; i < ICACHE_DATA_PER_LINE / 8; i++)
 	{
 		ReadData = ReadMemory(AlignAddress + 8LL * i);
@@ -432,7 +444,7 @@ UINT64 ReadInstCache(UINT32 LineAddress, UINT8 DataSize, UINT8 BlockOffset)
 	return ReadValue;
 }
 
-UINT8 AccessInstCache(UINT64 Address, UINT8 Operation, UINT8 InstSize, UINT64 *InstResult)
+UINT8 AccessInstCache(UINT64 Address, UINT8 Operation, UINT8 InstSize, UINT64* InstResult)
 {
 	// 返回值'M' = Miss，'H'=Hit
 	UINT32 CacheLineAddress;
@@ -493,10 +505,10 @@ void LoadL2CacheLineFromMemory(UINT64 Address, UINT32 CacheLineAddress)
 	UINT32 i;
 	UINT64 ReadData;
 	UINT64 AlignAddress;
-	UINT64 *pp;
+	UINT64* pp;
 
 	AlignAddress = Address & ~(L2CACHE_DATA_PER_LINE - 1); // 地址必须对齐到L2CACHE_DATA_PER_LINE (64)字节边界
-	pp = (UINT64 *)L2Cache[CacheLineAddress].Data;
+	pp = (UINT64*)L2Cache[CacheLineAddress].Data;
 	for (i = 0; i < L2CACHE_DATA_PER_LINE / 8; i++)
 	{
 		ReadData = ReadMemory(AlignAddress + 8LL * i);
@@ -513,10 +525,10 @@ void StoreL2CacheLineToMemory(UINT64 Address, UINT32 CacheLineAddress)
 	UINT32 i;
 	UINT64 WriteData;
 	UINT64 AlignAddress;
-	UINT64 *pp;
+	UINT64* pp;
 
 	AlignAddress = Address & ~(L2CACHE_DATA_PER_LINE - 1); // 地址必须对齐到L2CACHE_DATA_PER_LINE (64)字节边界
-	pp = (UINT64 *)L2Cache[CacheLineAddress].Data;
+	pp = (UINT64*)L2Cache[CacheLineAddress].Data;
 	for (i = 0; i < L2CACHE_DATA_PER_LINE / 8; i++)
 	{
 		WriteData = pp[i];
@@ -621,7 +633,7 @@ void WriteL2Cache(UINT32 LineAddress, UINT8 DataSize, UINT8 BlockOffset, UINT64 
  * 返回值: 读取的数据
  */
 
-UINT8 AccessL2Cache(UINT64 Address, UINT8 Operation, UINT8 DataSize, UINT64 StoreValue, UINT64 *LoadResult)
+UINT8 AccessL2Cache(UINT64 Address, UINT8 Operation, UINT8 DataSize, UINT64 StoreValue, UINT64* LoadResult)
 {
 	UINT32 CacheLineAddress;
 	UINT8 BlockOffset;
@@ -634,7 +646,11 @@ UINT8 AccessL2Cache(UINT64 Address, UINT8 Operation, UINT8 DataSize, UINT64 Stor
 	CacheLineAddress = (Address >> L2CACHE_DATA_PER_LINE_ADDR_BITS) % L2CACHE_LINE;
 	BlockOffset = Address % L2CACHE_DATA_PER_LINE;
 	AddressTag = (Address >> L2CACHE_DATA_PER_LINE_ADDR_BITS) >> L2CACHE_LINE_ADDR_BITS;
+	if (DEBUG) {
+		printf("L2: [%s] Address=0x%llx, CacheLineAddress=0x%x, BlockOffset=0x%x, AddressTag=0x%llx\n", __func__, Address, CacheLineAddress, BlockOffset, AddressTag);
+		printf("L2: [%s] Operation=%c, DataSize=%d, StoreValue=0x%llx\n", __func__, Operation, DataSize, StoreValue);
 
+	}
 	if (L2Cache[CacheLineAddress].Valid == 1 && L2Cache[CacheLineAddress].Tag == AddressTag)
 	{
 		MissFlag = 'H';
@@ -644,14 +660,14 @@ UINT8 AccessL2Cache(UINT64 Address, UINT8 Operation, UINT8 DataSize, UINT64 Stor
 		MissFlag = 'M';
 	}
 
-	if (MissFlag == 'H')
+	if (MissFlag == 'H') // L2Cache Hit
 	{
-		if (Operation == 'L')
+		if (Operation == 'L') // Load
 		{
 			ReadValue = ReadL2Cache(CacheLineAddress, DataSize, BlockOffset);
 			*LoadResult = ReadValue;
 		}
-		else if (Operation == 'S' || Operation == 'M')
+		else if (Operation == 'S' || Operation == 'M') // Store or Modify
 		{
 			WriteL2Cache(CacheLineAddress, DataSize, BlockOffset, StoreValue);
 		}
@@ -664,16 +680,19 @@ UINT8 AccessL2Cache(UINT64 Address, UINT8 Operation, UINT8 DataSize, UINT64 Stor
 	{
 		if (L2Cache[CacheLineAddress].Valid == 1)
 		{
-			UINT64 OldAddress = (L2Cache[CacheLineAddress].Tag << L2CACHE_LINE_ADDR_BITS) + CacheLineAddress;
+			// UINT64 OldAddress = (L2Cache[CacheLineAddress].Tag << L2CACHE_LINE_ADDR_BITS) + CacheLineAddress;
+			UINT64 OldAddress = ((L2Cache[CacheLineAddress].Tag << L2CACHE_LINE_ADDR_BITS) << L2CACHE_DATA_PER_LINE_ADDR_BITS) |
+				((UINT64)CacheLineAddress << L2CACHE_DATA_PER_LINE_ADDR_BITS);
 			StoreL2CacheLineToMemory(OldAddress, CacheLineAddress);
 		}
 		LoadL2CacheLineFromMemory(Address, CacheLineAddress);
 		L2Cache[CacheLineAddress].Valid = 1;
 		L2Cache[CacheLineAddress].Tag = AddressTag;
+		*LoadResult = ReadL2Cache(CacheLineAddress, DataSize, BlockOffset);
 		if (Operation == 'L')
 		{
-			ReadValue = ReadL2Cache(CacheLineAddress, DataSize, BlockOffset);
-			*LoadResult = ReadValue;
+			// ReadValue = ReadL2Cache(CacheLineAddress, DataSize, BlockOffset);
+			// *LoadResult = ReadValue;
 		}
 		else if (Operation == 'S' || Operation == 'M')
 		{
@@ -684,6 +703,8 @@ UINT8 AccessL2Cache(UINT64 Address, UINT8 Operation, UINT8 DataSize, UINT64 Stor
 			printf("[%s] Error Operation=%c\n", __func__, Operation);
 		}
 	}
+	if (DEBUG)
+		printf("L2: LoadResult=0x%llx\n", *LoadResult);
 	return MissFlag;
 }
 
@@ -712,7 +733,7 @@ void DCache_to_L2(UINT64 Address, UINT8 DataSize, UINT64 Value)
 }
 
 // L2 to L1
-void L2_to_L1(UINT64 Address, UINT8 DataSize, UINT64 *Value)
+void L2_to_L1(UINT64 Address, UINT8 DataSize, UINT64* Value)
 {
 	UINT32 CacheLineAddress;
 	UINT8 BlockOffset;

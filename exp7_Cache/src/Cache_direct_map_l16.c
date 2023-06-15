@@ -51,8 +51,8 @@
 #define DCACHE_SIZE 16384													// 16 KB
 #define DCACHE_DATA_PER_LINE 16												// 每行的字节数
 #define DCACHE_DATA_PER_LINE_ADDR_BITS GET_POWER_OF_2(DCACHE_DATA_PER_LINE) // 必须与上面设置一致，即64字节，需要6位地址 (b)
-#define DCACHE_SET (DCACHE_SIZE / DCACHE_DATA_PER_LINE)						// Cache的行数
-#define DCACHE_SET_ADDR_BITS GET_POWER_OF_2(DCACHE_SET)						// 必须与上面设置一致，即256行，需要8位地址  (s)
+#define DCACHE_LINE (DCACHE_SIZE / DCACHE_DATA_PER_LINE)					// Cache的行数
+#define DCACHE_LINE_ADDR_BITS GET_POWER_OF_2(DCACHE_LINE)					// 必须与上面设置一致，即256行，需要8位地址  (s)
 
 // Cache行的结构，包括Valid、Tag和Data。你所有的状态信息，只能记录在Cache行中！
 struct DCACHE_LineStruct
@@ -86,10 +86,10 @@ void LoadDataCacheLineFromMemory(UINT64 Address, UINT32 CacheLineAddress)
 	UINT32 i;
 	UINT64 ReadData;
 	UINT64 AlignAddress;
-	UINT64 *pp;
+	UINT64* pp;
 
 	AlignAddress = Address & ~(DCACHE_DATA_PER_LINE - 1); // 地址必须对齐到DCACHE_DATA_PER_LINE (64)字节边界
-	pp = (UINT64 *)DCache[CacheLineAddress].Data;
+	pp = (UINT64*)DCache[CacheLineAddress].Data;
 	for (i = 0; i < DCACHE_DATA_PER_LINE / 8; i++)
 	{
 		ReadData = ReadMemory(AlignAddress + 8LL * i);
@@ -109,10 +109,10 @@ void StoreDataCacheLineToMemory(UINT64 Address, UINT32 CacheLineAddress)
 	UINT32 i;
 	UINT64 WriteData;
 	UINT64 AlignAddress;
-	UINT64 *pp;
+	UINT64* pp;
 
 	AlignAddress = Address & ~(DCACHE_DATA_PER_LINE - 1); // 地址必须对齐到DCACHE_DATA_PER_LINE (64)字节边界
-	pp = (UINT64 *)DCache[CacheLineAddress].Data;
+	pp = (UINT64*)DCache[CacheLineAddress].Data;
 	WriteData = 0;
 	for (i = 0; i < DCACHE_DATA_PER_LINE / 8; i++)
 	{
@@ -168,7 +168,6 @@ UINT64 ReadCache(UINT32 LineAddress, UINT8 DataSize, UINT8 BlockOffset)
 	return ReadValue;
 }
 
-
 void WriteCache(UINT32 LineAddress, UINT8 DataSize, UINT8 BlockOffset, UINT64 StoreValue)
 {
 	switch (DataSize)
@@ -220,7 +219,7 @@ void WriteCache(UINT32 LineAddress, UINT8 DataSize, UINT8 BlockOffset, UINT64 St
 	StoreValue:	当执行写操作的时候，需要写入的数据
 	LoadResult:	当执行读操作的时候，从Cache读出的数据
 */
-UINT8 AccessDataCache(UINT64 Address, UINT8 Operation, UINT8 DataSize, UINT64 StoreValue, UINT64 *LoadResult)
+UINT8 AccessDataCache(UINT64 Address, UINT8 Operation, UINT8 DataSize, UINT64 StoreValue, UINT64* LoadResult)
 {
 	UINT32 CacheLineAddress;
 	UINT8 BlockOffset;
@@ -234,11 +233,11 @@ UINT8 AccessDataCache(UINT64 Address, UINT8 Operation, UINT8 DataSize, UINT64 St
 	 *	直接映射中，Address被切分为  AddressTag，CacheLineAddress，BlockOffset
 	 */
 
-	// CacheLineAddress Cache的行号，在直接映射中，就是组号（每组1行）
+	 // CacheLineAddress Cache的行号，在直接映射中，就是组号（每组1行）
 	CacheLineAddress = (Address >> DCACHE_DATA_PER_LINE_ADDR_BITS) % DCACHE_LINE;
 	BlockOffset = Address % DCACHE_DATA_PER_LINE;
 	// 地址去掉DCACHE_SET、DCACHE_DATA_PER_LINE，剩下的作为Tag。警告！不能将整个地址作为Tag！！
-	AddressTag = (Address >> DCACHE_DATA_PER_LINE_ADDR_BITS) >> DCACHE_SET_ADDR_BITS;
+	AddressTag = (Address >> DCACHE_DATA_PER_LINE_ADDR_BITS) >> DCACHE_LINE_ADDR_BITS;
 
 	if (DCache[CacheLineAddress].Valid == 1 && DCache[CacheLineAddress].Tag == AddressTag)
 	{
@@ -256,7 +255,6 @@ UINT8 AccessDataCache(UINT64 Address, UINT8 Operation, UINT8 DataSize, UINT64 St
 			if (DEBUG)
 				printf("[%s] Address=%016llX Operation=%c DataSize=%u StoreValue=%016llX\n", __func__, Address, Operation, DataSize, StoreValue);
 			WriteCache(CacheLineAddress, DataSize, BlockOffset, StoreValue);
-	
 		}
 	}
 	else
@@ -270,7 +268,8 @@ UINT8 AccessDataCache(UINT64 Address, UINT8 Operation, UINT8 DataSize, UINT64 St
 			UINT64 OldAddress;
 			// OldAddress = > (Tag,Set,0000)
 			// 从Tag中恢复旧的地址
-			OldAddress = ((DCache[CacheLineAddress].Tag << DCACHE_SET_ADDR_BITS) << DCACHE_DATA_PER_LINE_ADDR_BITS) | ((UINT64)CacheLineAddress << DCACHE_DATA_PER_LINE_ADDR_BITS);
+			OldAddress = ((DCache[CacheLineAddress].Tag << DCACHE_LINE_ADDR_BITS) << DCACHE_DATA_PER_LINE_ADDR_BITS) |
+						 ((UINT64)CacheLineAddress << DCACHE_DATA_PER_LINE_ADDR_BITS);
 			StoreDataCacheLineToMemory(OldAddress, CacheLineAddress);
 		}
 		// 需要从Memory中读入新的行（真实情况下，这个LoadCacheLineFromMemory需要很长时间的）
@@ -301,7 +300,7 @@ void LoadInstCacheLineFromMemory(UINT64 Address, UINT32 CacheLineAddress)
 	return;
 }
 
-UINT8 AccessInstCache(UINT64 Address, UINT8 Operation, UINT8 InstSize, UINT64 *InstResult)
+UINT8 AccessInstCache(UINT64 Address, UINT8 Operation, UINT8 InstSize, UINT64* InstResult)
 {
 	// 返回值'M' = Miss，'H'=Hit
 	return 'M';
